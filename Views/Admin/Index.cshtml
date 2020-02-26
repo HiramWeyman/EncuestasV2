@@ -1,0 +1,57 @@
+﻿
+@using EncuestasV2.Models;
+@model List<encuesta_usuariosCLS>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+    <div id="contenedor">
+        
+        <h3>Menu de opciones</h3>
+        <hr />
+        <div class="table-responsive text-nowrap ">
+            <table class="table  table-sm  table-bordered ">
+
+                <tbody>
+
+                    <tr>
+                        <td><label>Empleados Registrados</label></td>
+                        <td> @Html.ActionLink("Mostrar", "Empleados", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Ingresar Empresa</label></td>
+                        <td> @Html.ActionLink("Mostrar", "ListarEmpresa", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+                    <tr>
+                        <td><label>Ingresar Departamento</label></td>
+                        <td> @Html.ActionLink("Mostrar", "Create", "Depto", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+                    <tr>
+                        <td><label>Ingresar Centro de Trabajo</label></td>
+                        <td> @Html.ActionLink("Mostrar", "Create", "Centro_Trabajo", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+                    <tr>
+                        <td><label>Ingresar Periodo de la Encuesta</label></td>
+                        <td> @Html.ActionLink("Mostrar", "Create", "Periodo", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+                    <tr>
+                        <td><label>Resultados de encuestas</label></td>
+                        <td> @Html.ActionLink("Mostrar", "ListarEncuesta", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+                    </tr>
+                    @*<tr>
+            <td><label>Desactivar Usuarios por Empresa</label></td>
+            <td> @Html.ActionLink("Mostrar", "DesactivarUsuarios", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })</td>
+        </tr>*@
+
+
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+
+
