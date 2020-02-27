@@ -55,16 +55,16 @@ namespace EncuestasV2.Controllers
                     //int numeroVeces = db.encuesta_usuarios.Where(p => p.usua_n_usuario == nombre_usuario
                     //                  && p.usua_p_usuario == contraCifrada && p.usua_presento=="N").Count();
 
-                    int numeroVeces = db.Database.SqlQuery<int>("select count(*) from dbo.encuesta_usuarios,dbo.encuaesta_periodo where usua_periodo=periodo_id and usua_n_usuario=@usuario and usua_p_usuario=@password", new SqlParameter("@usuario", nombre_usuario), new SqlParameter("@password", contraCifrada))
+                    int numeroVeces = db.Database.SqlQuery<int>("select count(*) from dbo.encuesta_usuarios,dbo.encuaesta_periodo where usua_presento='N' and usua_periodo=periodo_id and periodo_estatus='A' and usua_n_usuario=@usuario and usua_p_usuario=@password", new SqlParameter("@usuario", nombre_usuario), new SqlParameter("@password", contraCifrada))
                                      .FirstOrDefault();
 
                     mensaje = numeroVeces.ToString();
                     if (mensaje == "0")
                     {
-                        mensaje = "Usuario o contraseña Incorrecto";
+                        mensaje = "Es posoble que su usuario o password sea Incorrecto o que ya presento la encuesta";
                     }
                     else {
-                        string usuario = db.Database.SqlQuery<string>("Select usua_n_usuario from encuesta_usuarios,dbo.encuaesta_periodo where usua_periodo=periodo_id and usua_n_usuario=@usuario and usua_p_usuario=@password", new SqlParameter("@usuario", nombre_usuario), new SqlParameter("@password", contraCifrada))
+                        string usuario = db.Database.SqlQuery<string>("Select usua_n_usuario from dbo.encuesta_usuarios,dbo.encuaesta_periodo where usua_presento='N' and usua_periodo=periodo_id and periodo_estatus='A' and usua_n_usuario=@usuario and usua_p_usuario=@password", new SqlParameter("@usuario", nombre_usuario), new SqlParameter("@password", contraCifrada))
                       .FirstOrDefault();
                         Session["Usuario"] = usuario;
                         Console.WriteLine(usuario);
