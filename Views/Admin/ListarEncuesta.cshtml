@@ -94,7 +94,8 @@
             {
                 ids = ids.Substring(0, ids.Length - 1);
                 @Html.ActionLink("Regresar a Menu", "Index", "Admin", new { @class = "btn btn-primary my-2 my-sm-0 " })
-                @Html.ActionLink("Resultado por empresa", "VerResultadoPorEmpresa", "Admin", new { ids_usuarios = ids }, new { id = "botonResultadoEmpresas", @class = "btn btn-primary my-2 my-sm-0", @style = "display:none" } )
+                @Html.ActionLink("Resultado por empresa", "VerResultadoPorEmpresa", "Admin", new { ids_usuarios = ids }, new { id = "botonResultadoEmpresas", @class = "btn btn-primary my-2 my-sm-0", @style = "display:none" })
+                @Html.ActionLink("¿Quienes necesitan atención medica?", "VerAtencionMedica", "Admin", new { ids_usuarios = ids }, new { id = "botonAtencionMedica", @class = "btn btn-primary my-2 my-sm-0", @style = "display:none" })
             }
             else
             {
@@ -118,6 +119,7 @@
     document.getElementById("id_empresa").value = document.getElementById("usua_empresa").value;
     if (document.getElementById("id_empresa").value != "") {
         document.getElementById("botonResultadoEmpresas").style.display = "inline-block";
+        document.getElementById("botonAtencionMedica").style.display = "inline-block";
     }
 </script>
 

@@ -1518,6 +1518,7 @@ namespace EncuestasV2.Controllers
             {
                 int id_estatus = db.Database.SqlQuery<int>("select periodo_id from encuaesta_periodo where periodo_estatus = 'A'").FirstOrDefault();
                 
+
                 listaEmpleado = (from empleado in db.encuesta_usuarios
                                  where empleado.usua_presento == "S"
                                  && empleado.usua_periodo == id_estatus
@@ -3220,6 +3221,88 @@ namespace EncuestasV2.Controllers
             }
 
             return View();
+        }
+
+        public ActionResult VerAtencionMedica(string ids_usuarios)
+        {
+            ViewBag.ids = ids_usuarios;
+            String[] str = ids_usuarios.Split(',');
+
+            //object InsuficienteSentido = null;
+            //List<encuesta_usuariosCLS> listaEmpleado = null;
+
+            using (var db = new csstdura_encuestaEntities())
+            {
+                //con el primer registro sabemos de donde son los empleados(la empresa)
+                //int id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + str[0]).FirstOrDefault();
+                
+                var InsuficienteSentido = db.encuesta_resultados.SqlQuery(
+                " select count(*) resu_resultado,resu_usua_id,'I.- Acontecimiento traumático severo' as seccion" +
+                " from encuesta_resultados" +
+                " where resu_denc_id in (1, 2, 3, 4, 5, 6)" +
+                " and resu_resultado = 'SI'" +
+                " group by resu_usua_id" +
+                " union" +
+                " select count(*) resu_resultado,resu_usua_id,'II.- Recuerdos persistentes sobre el acontecimiento' as seccion" +
+                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
+                " where resu_denc_id in (7, 8)" +
+                " and resu_resultado = 'SI'" +
+                " group by resu_usua_id" +
+                " union" +
+                " select count(*) resu_resultado,resu_usua_id,'III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento' as seccion" +
+                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
+                " where resu_denc_id in (9, 10, 11, 12, 13, 14, 15)" +
+                " and resu_resultado = 'SI'" +
+                " group by resu_usua_id" +
+                " union" +
+                " select count(*) resu_resultado,resu_usua_id,'IV Afectación' as seccion" +
+                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
+                " where resu_denc_id in (16, 17, 18, 19, 20)" +
+                " and resu_resultado = 'SI'" +
+                " group by resu_usua_id" +
+                " order by seccion").ToList();
+                
+
+                /*
+                int[] my_array = new int[] { 1, 2, 3, 4, 5, 6 };
+
+                listaEmpleado = (from empleado in db.encuesta_resultados
+                                 where (int)my_array.Contains(empleado.resu_denc_id)
+                                 && empleado.usua_periodo == id_estatus
+                                 join empresa in db.encuesta_empresa
+                                 on empleado.usua_empresa equals empresa.emp_id
+                                 join genero in db.encuesta_sexo
+                                 on empleado.usua_genero equals genero.sexo_id
+                                 join edad_emp in db.encuesta_edades
+                                 on empleado.usua_edad equals edad_emp.edad_id
+                                 join edo in db.encuesta_edocivil
+                                 on empleado.usua_edo_civil equals edo.edocivil_id
+                                 //from empleados in db.encuesta_usuarios
+                                 join resultado in db.encuesta_resultados
+                                 on empleado.usua_id equals resultado.resu_usua_id
+
+
+                                 select new encuesta_usuariosCLS
+                                 {
+                                     usua_id = empleado.usua_id,
+                                     usua_nombre = empleado.usua_nombre,
+                                     usua_estatus = empleado.usua_estatus,
+                                     usua_n_usuario = empleado.usua_n_usuario,
+                                     usua_p_usuario = empleado.usua_p_usuario,
+                                     usua_empresa = (int)empleado.usua_empresa,
+                                     usua_genero = (int)empleado.usua_genero,
+                                     usua_edad = (int)empleado.usua_edad,
+                                     usua_edo_civil = (int)empleado.usua_edo_civil,
+                                     empleado_empresa = empresa.emp_descrip,
+                                     empleado_genero = genero.sexo_desc,
+                                     empleado_edad = edad_emp.edad_desc,
+                                     empleado_edocivil = edo.edocivil_desc
+
+                                 }).Distinct().ToList();
+                                 */
+            }
+            return View();
+
         }
 
     }
