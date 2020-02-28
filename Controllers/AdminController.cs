@@ -3229,7 +3229,7 @@ namespace EncuestasV2.Controllers
             String[] str = ids_usuarios.Split(',');
 
             //object InsuficienteSentido = null;
-            //List<encuesta_usuariosCLS> listaEmpleado = null;
+            List<encuesta_usuariosCLS> listaEmpleado = null;
 
             using (var db = new csstdura_encuestaEntities())
             {
@@ -3261,25 +3261,40 @@ namespace EncuestasV2.Controllers
                 " and resu_resultado = 'SI'" +
                 " group by resu_usua_id" +
                 " order by seccion").ToList();
-                
 
-                /*
+
+
                 int[] my_array = new int[] { 1, 2, 3, 4, 5, 6 };
+                //List<int> lista = new List<int>() { 1, 2, 3, 4, 5, 6, };
+                //listaEmpleado = (from empleado in db.encuesta_resultados
+                //                 where lista.Contains((int)empleado.resu_denc_id)
+                //                 //&& empleado.usua_periodo == id_estatus
+                //                 join empresa in db.encuesta_empresa
+                //                 on empleado.usua_empresa equals empresa.emp_id
+                //                 join genero in db.encuesta_sexo
+                //                 on empleado.usua_genero equals genero.sexo_id
+                //                 join edad_emp in db.encuesta_edades
+                //                 on empleado.usua_edad equals edad_emp.edad_id
+                //                 join edo in db.encuesta_edocivil
+                //                 on empleado.usua_edo_civil equals edo.edocivil_id
+                //                 //from empleados in db.encuesta_usuarios
+                //                 join resultado in db.encuesta_resultados
+                //                 on empleado.usua_id equals resultado.resu_usua_id
 
-                listaEmpleado = (from empleado in db.encuesta_resultados
-                                 where (int)my_array.Contains(empleado.resu_denc_id)
-                                 && empleado.usua_periodo == id_estatus
+                List<int> lista = new List<int>() { 1, 2, 3, 4, 5, 6, };
+                listaEmpleado = (from resultado in db.encuesta_resultados
+                                 join empleado in db.encuesta_usuarios
+                                 on resultado.resu_usua_id equals empleado.usua_id
                                  join empresa in db.encuesta_empresa
                                  on empleado.usua_empresa equals empresa.emp_id
                                  join genero in db.encuesta_sexo
                                  on empleado.usua_genero equals genero.sexo_id
-                                 join edad_emp in db.encuesta_edades
-                                 on empleado.usua_edad equals edad_emp.edad_id
-                                 join edo in db.encuesta_edocivil
-                                 on empleado.usua_edo_civil equals edo.edocivil_id
-                                 //from empleados in db.encuesta_usuarios
-                                 join resultado in db.encuesta_resultados
-                                 on empleado.usua_id equals resultado.resu_usua_id
+                                 join edad in db.encuesta_edades
+                                 on empleado.usua_edad equals edad.edad_id
+                                 join edocivil in db.encuesta_edocivil
+                                 on empleado.usua_edo_civil equals edocivil.edocivil_id
+                                 where lista.Contains((int)resultado.resu_denc_id)
+                                 //&& empleado.usua_periodo == id_estatus
 
 
                                  select new encuesta_usuariosCLS
@@ -3295,11 +3310,11 @@ namespace EncuestasV2.Controllers
                                      usua_edo_civil = (int)empleado.usua_edo_civil,
                                      empleado_empresa = empresa.emp_descrip,
                                      empleado_genero = genero.sexo_desc,
-                                     empleado_edad = edad_emp.edad_desc,
-                                     empleado_edocivil = edo.edocivil_desc
+                                     empleado_edad = edad.edad_desc,
+                                     empleado_edocivil = edocivil.edocivil_desc
 
                                  }).Distinct().ToList();
-                                 */
+
             }
             return View();
 
