@@ -2,13 +2,78 @@
 @{
     ViewBag.Title = "VerAtencionMedica";
     Layout = "~/Views/Shared/_Layout2.cshtml";
+    int x = 0;
 }
 
 <h2>VerAtencionMedica</h2>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Resultado</th>
+            <th>Sección</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    @foreach (var elemento in Model)
+    {
 
-@foreach (var elemento in Model)
-{
-    <tr>
-        <td>@elemento.resu_resultado</td>
-    </tr>
-}
+<tr>
+    <td>@elemento.usua_nombre</td>
+    <td>@elemento.resu_resultado</td>
+    <td>@elemento.resu_seccion</td>
+    @if (elemento.resu_seccion_id == 1)
+    {
+        if (elemento.resu_resultado > 0)
+        {
+            <td><strong>El trabajador <u>REQUIERE</u> atención clínica </strong></td>
+        }
+        else
+        {
+            <td><strong>El trabajador no atención clínica </strong></td>
+        }
+    }
+
+    @if (elemento.resu_seccion_id == 2)
+    {
+        if (elemento.resu_resultado > 0)
+        {
+            <td><strong>El trabajador <u>REQUIERE</u> atención clínica </strong></td>
+        }
+        else
+        {
+            <td><strong>El trabajador no atención clínica </strong></td>
+        }
+    }
+
+    @if (elemento.resu_seccion_id == 3)
+    {
+        if (elemento.resu_resultado > 2)
+        {
+            <td><strong>El trabajador <u>REQUIERE</u> atención clínica </strong></td>
+        }
+        else
+        {
+            <td><strong>El trabajador no atención clínica </strong></td>
+        }
+    }
+
+    @if (elemento.resu_seccion_id == 4)
+    {
+        if (elemento.resu_resultado > 1)
+        {
+            <td><strong>El trabajador <u>REQUIERE</u> atención clínica </strong></td>
+        }
+        else
+        {
+            <td><strong>El trabajador no atención clínica </strong></td>
+        }
+    }
+
+</tr>
+    }
+</table>
+
+<div>
+    @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+</div>

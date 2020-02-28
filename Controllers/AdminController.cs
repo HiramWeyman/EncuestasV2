@@ -3225,17 +3225,15 @@ namespace EncuestasV2.Controllers
 
         public ActionResult VerAtencionMedica(string ids_usuarios)
         {
-            ViewBag.ids = ids_usuarios;
-            String[] str = ids_usuarios.Split(',');
-
-            //object InsuficienteSentido = null;
+            //ViewBag.ids = ids_usuarios;
+            
             List<encuesta_usuariosCLS> listaEmpleado = null;
 
             using (var db = new csstdura_encuestaEntities())
             {
                 //con el primer registro sabemos de donde son los empleados(la empresa)
                 //int id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + str[0]).FirstOrDefault();
-                
+                /*
                 var InsuficienteSentido = db.encuesta_resultados.SqlQuery(
                 " select count(*) resu_resultado,resu_usua_id,'I.- Acontecimiento traumático severo' as seccion" +
                 " from encuesta_resultados" +
@@ -3261,62 +3259,95 @@ namespace EncuestasV2.Controllers
                 " and resu_resultado = 'SI'" +
                 " group by resu_usua_id" +
                 " order by seccion").ToList();
+                */
+                List<int> Acontecimiento = new List<int>() { 1, 2, 3, 4, 5, 6 };
+                List<int> Recuerdos = new List<int>() { 7, 8 };
+                List<int> Esfuerzo = new List<int>() { 9, 10, 11, 12, 13, 14, 15 };
+                List<int> Afectación = new List<int>() { 16, 17, 18, 19, 20 };
+                List<int> intUsuarios = new List<int>() { };
+                
+                String[] str = ids_usuarios.Split(',');
+                for (int x = 0; x < str.Length; x++)
+                {
+                    int value = Convert.ToInt32(str[x]);
+                    intUsuarios.Add(value);
+                }
 
 
-
-                int[] my_array = new int[] { 1, 2, 3, 4, 5, 6 };
-                //List<int> lista = new List<int>() { 1, 2, 3, 4, 5, 6, };
-                //listaEmpleado = (from empleado in db.encuesta_resultados
-                //                 where lista.Contains((int)empleado.resu_denc_id)
-                //                 //&& empleado.usua_periodo == id_estatus
-                //                 join empresa in db.encuesta_empresa
-                //                 on empleado.usua_empresa equals empresa.emp_id
-                //                 join genero in db.encuesta_sexo
-                //                 on empleado.usua_genero equals genero.sexo_id
-                //                 join edad_emp in db.encuesta_edades
-                //                 on empleado.usua_edad equals edad_emp.edad_id
-                //                 join edo in db.encuesta_edocivil
-                //                 on empleado.usua_edo_civil equals edo.edocivil_id
-                //                 //from empleados in db.encuesta_usuarios
-                //                 join resultado in db.encuesta_resultados
-                //                 on empleado.usua_id equals resultado.resu_usua_id
-
-                List<int> lista = new List<int>() { 1, 2, 3, 4, 5, 6, };
                 listaEmpleado = (from resultado in db.encuesta_resultados
                                  join empleado in db.encuesta_usuarios
                                  on resultado.resu_usua_id equals empleado.usua_id
-                                 join empresa in db.encuesta_empresa
-                                 on empleado.usua_empresa equals empresa.emp_id
-                                 join genero in db.encuesta_sexo
-                                 on empleado.usua_genero equals genero.sexo_id
-                                 join edad in db.encuesta_edades
-                                 on empleado.usua_edad equals edad.edad_id
-                                 join edocivil in db.encuesta_edocivil
-                                 on empleado.usua_edo_civil equals edocivil.edocivil_id
-                                 where lista.Contains((int)resultado.resu_denc_id)
-                                 //&& empleado.usua_periodo == id_estatus
-
+                                 where Acontecimiento.Contains((int)resultado.resu_denc_id)
+                                 && resultado.resu_resultado == "SI"
+                                 && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                 group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                 orderby grp.Key.usua_nombre
 
                                  select new encuesta_usuariosCLS
                                  {
-                                     usua_id = empleado.usua_id,
-                                     usua_nombre = empleado.usua_nombre,
-                                     usua_estatus = empleado.usua_estatus,
-                                     usua_n_usuario = empleado.usua_n_usuario,
-                                     usua_p_usuario = empleado.usua_p_usuario,
-                                     usua_empresa = (int)empleado.usua_empresa,
-                                     usua_genero = (int)empleado.usua_genero,
-                                     usua_edad = (int)empleado.usua_edad,
-                                     usua_edo_civil = (int)empleado.usua_edo_civil,
-                                     empleado_empresa = empresa.emp_descrip,
-                                     empleado_genero = genero.sexo_desc,
-                                     empleado_edad = edad.edad_desc,
-                                     empleado_edocivil = edocivil.edocivil_desc
+                                     resu_usua_id = grp.Key.resu_usua_id,
+                                     resu_resultado = grp.Count(),
+                                     usua_nombre = grp.Key.usua_nombre,
+                                     resu_seccion_id = 1,
+                                     resu_seccion = "I.- Acontecimiento traumático severo"
+                                 }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Recuerdos.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
 
-                                 }).Distinct().ToList();
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 2,
+                                        resu_seccion = "II.- Recuerdos persistentes sobre el acontecimiento"
+                                    }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Esfuerzo.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
+
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 3,
+                                        resu_seccion = "III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento"
+                                    }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Afectación.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
+
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 4,
+                                        resu_seccion = "IV Afectación"
+                                    }).Distinct().ToList();
 
             }
-            return View();
+            return View(listaEmpleado);
 
         }
 

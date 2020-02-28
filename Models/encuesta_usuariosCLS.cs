@@ -143,5 +143,12 @@ namespace EncuestasV2.Models
         public string empleado_tiempopuesto { get; set; }
         public string empleado_explab { get; set; }
 
+        public int resu_resultado { get; set; }
+
+        public int? resu_usua_id { get; set; }
+
+        public string resu_seccion { get; set; }
+        public int resu_seccion_id { get; set; }
+
     }
 }
