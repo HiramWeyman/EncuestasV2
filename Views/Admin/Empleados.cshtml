@@ -72,8 +72,8 @@ $('table').on('scroll', function() {
     {
         @*<a href="@Url.Action("InsertaUsuario","Admin")" class="btn btn-primary" target="_blank"><i class="fas fa-user-plus"></i><span></span><b> Agregar Nuevo Registro</b></a>*@
         @Html.ActionLink("Agregar Nuevo Registro", "InsertaUsuario", "Admin", new { @class = "btn btn-primary my-2 my-sm-0 " })
-        <a href="@Url.Action("GenerarPDFUsuarios", "Admin")" class="btn btn-danger" target="_blank"><i class="fas fa-file-pdf"></i><span></span><b> Generar PDF</b></a>
-        <a href="@Url.Action("generarExcelEmpleados", "Admin")" class="btn btn-success" target="_blank"><i class="fas fa-file-excel"></i><span></span><b> Generar Excel</b></a>
+        <a href="@Url.Action("GenerarPDFUsuarios", "Pdf")" class="btn btn-danger" target="_blank"><i class="fas fa-file-pdf"></i><span></span><b> Generar PDF</b></a>
+        <a href="@Url.Action("generarExcelEmpleados", "Excel")" class="btn btn-success" target="_blank"><i class="fas fa-file-excel"></i><span></span><b> Generar Excel</b></a>
         @Html.ActionLink("Regresar a Menu", "Index", "Admin", new { @class = "btn btn-primary my-2 my-sm-0 " })
 
 

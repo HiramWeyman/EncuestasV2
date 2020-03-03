@@ -25,9 +25,9 @@ $('.dataTables_length').addClass('bs-select');
         
         <a href="@Url.Action("CatalogoEmpresa", "Admin")" class="btn btn-primary"><i class="fas fa-plus-circle"></i><span></span><b> Agregar</b></a>
         @*@Html.ActionLink("Agregar", "CatalogoEmpresa", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0" })<span></span>*@
-        <a href="@Url.Action("GenerarPDF", "Admin")" class="btn btn-danger" target="_blank"><i class="fas fa-file-pdf"></i><span></span><b> Generar PDF</b></a>
+        <a href="@Url.Action("GenerarPdfEmpresas", "Pdf")" class="btn btn-danger" target="_blank"><i class="fas fa-file-pdf"></i><span></span><b> Generar PDF</b></a>
         @*@Html.ActionLink("Generar PDF", "GenerarPDF", "Admin", new { area = "" }, new { @class = "btn btn-primary my-2 my-sm-0", @target = "_blank" })<span></span>*@
-        <a href="@Url.Action("generarExcelByte", "Admin")" class="btn btn-success"  target="_blank"><i class="fas fa-file-excel"></i><span></span><b> Generar Excel</b></a>
+        <a href="@Url.Action("generarExcelEmpresas", "Excel")" class="btn btn-success"  target="_blank"><i class="fas fa-file-excel"></i><span></span><b> Generar Excel</b></a>
         @*@Html.ActionLink("Generar Excel", "generarExcelByte", "Admin", new { area = "" }, new { @class = "btn btn-success my-2 my-sm-0 fas fa-file-excel", @target = "_blank" })*@
         <br />
         <i class="fas fa-search"></i>

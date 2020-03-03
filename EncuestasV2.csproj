@@ -363,6 +363,9 @@
     <Content Include="Views\Centro_Trabajo\Details.cshtml" />
     <Content Include="Views\Centro_Trabajo\Edit.cshtml" />
     <Content Include="Views\Centro_Trabajo\Index.cshtml" />
+    <Content Include="Views\Admin\VerResultadoPorEmpresa.cshtml" />
+    <Content Include="Views\Admin\VerResultadoPorEmpresaCategoria.cshtml" />
+    <Content Include="Views\Admin\VerResultadoPorEmpresaFinal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

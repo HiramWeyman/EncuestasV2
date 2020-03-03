@@ -6,8 +6,8 @@
 }
 
 <input type="hidden" id="id_usuario" name="id_usuario" value=@ViewBag.id_usuario />
-<h5><strong>CUESTIONARIO PARA IDENTIFICAR A LOS TRABAJADORES QUE FUERON SUJETOS A ACONTECIMIENTOS TRAUMÁTICOS SEVEROS.</strong></h5>
-<p>Nombre del empleado: <strong>@ViewBag.nombreEmpleado</strong></p>
+<h4><strong>CUESTIONARIO PARA IDENTIFICAR A LOS TRABAJADORES QUE FUERON SUJETOS A ACONTECIMIENTOS TRAUMÁTICOS SEVEROS.</strong></h4>
+<h5><strong>CUESTIONARIO 1. PARTE 4</strong></h5><p>Nombre del empleado: <strong>@ViewBag.nombreEmpleado</strong></p>
 
 <table class="table">
     <thead class="thead-dark">
@@ -41,14 +41,17 @@
 
     @if (int.Parse(@ViewBag.num_empleados) < 51)
     {
-        <div>
-            @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
-            @Html.ActionLink("CALIFICACIONES DE DOMINIO", "VerResultadoUsuarioGuiaII", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
-        </div>
-    }else
+<div>
+    @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+    @Html.ActionLink("Exportar a Excel", "generarExcelResultados1", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
+    @Html.ActionLink("CALIFICACIONES DE DOMINIO", "VerResultadoUsuarioGuiaII", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
+</div>
+    }
+    else
     {
 <div>
     @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+    @Html.ActionLink("Exportar a Excel", "generarExcelResultados1", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
     @Html.ActionLink("CALIFICACIONES DE DOMINIO", "VerResultadoUsuarioGuiaIII", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
 </div>
     }
