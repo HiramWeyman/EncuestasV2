@@ -5,7 +5,8 @@
 }
 
 <input type="hidden" id="id_usuario" name="id_usuario" value=@ViewBag.id_usuario />
-<h5><strong>CUESTIONARIO PARA IDENTIFICAR LOS FACTORES DE RIESGO PSICOSOCIAL EN LOS CENTROS DE TRABAJO.</strong></h5>
+<h4><strong>CUESTIONARIO PARA IDENTIFICAR LOS FACTORES DE RIESGO PSICOSOCIAL EN LOS CENTROS DE TRABAJO.</strong></h4>
+<h5><strong>CUESTIONARIO 2.</strong></h5>
 <p>Nombre del empleado: <strong>@ViewBag.nombreEmpleado</strong></p>
 
 <table class="table">
@@ -118,6 +119,7 @@
 
 <div>
     @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+    @Html.ActionLink("Exportar a excel", "generaExcelGuiaIICat", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
     @Html.ActionLink("CALIFICACION final", "VerResultadoUsuarioGuiaIIFinal", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
 </div>
 

@@ -51,6 +51,8 @@
 
 <div>
     @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+    @Html.ActionLink("Exportar a excel", "generaExcelGuiaIIFinal", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
+
 </div>
 
 
