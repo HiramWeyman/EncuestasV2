@@ -118,6 +118,7 @@
 
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+        @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaCat", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
         @Html.ActionLink("CALIFICACION final", "VerResultadoPorEmpresaFinal", "Admin", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-primary my-2 my-sm-0" })
     </div>
 }
@@ -126,7 +127,7 @@ else
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th>Resultado del dominio</th>
+                <th>Resultado de categoría</th>
                 <th>Suma Total</th>
                 <th>Nivel de riesgo</th>
             </tr>
@@ -257,6 +258,7 @@ else
 
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+        @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaCat", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
         @Html.ActionLink("CALIFICACION FINAL", "VerResultadoPorEmpresaFinal", "Admin", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-primary my-2 my-sm-0" })
     </div>
 }
