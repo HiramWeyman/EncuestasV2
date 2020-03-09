@@ -53,6 +53,8 @@
 
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+        @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaFin", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
+
     </div>
 }
 else
@@ -101,6 +103,8 @@ else
 
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+        @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaFin", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
+
     </div>
 }
 

@@ -1690,6 +1690,7 @@ namespace EncuestasV2.Controllers
 
 
         }
+
         public FileResult ExcelResultadoPorEmpresaDom(string ids_usuarios) {
             //con el primer registro sabemos de donde son los empleados(la empresa)
             int id_empresa;
@@ -2321,15 +2322,6 @@ namespace EncuestasV2.Controllers
 
 
             string CondicionesAmbienteTrabajoRes = "";
-            string CargaTrabajoRes = "";
-            string FaltaControlSobreTrabajoRes = "";
-            string JornadaTrabajoRes = "";
-            string InterferenciaRelacionTrabajoFamiliaRes = "";
-            string LiderazgoRes = "";
-            string RelacionesTrabajoRes = "";
-            string ViolenciaRes = "";
-            string ReconocimientoDesempeñoRes = "";
-            string InsuficienteSentidoRes = "";
             string FactoresPropiosActividadRes = "";
             string OrganizacionTiempoTrabajoRes = "";
             string LiderazgoRelacionesTrabajoRes = "";
@@ -2852,6 +2844,451 @@ namespace EncuestasV2.Controllers
             }
 
             return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Resultado_Emp_Cat" + nombre_empresa + ".xlsx");
+        }
+
+        public FileResult ExcelResultadoPorEmpresaFin(string ids_usuarios) 
+        {
+            int id_empresa;
+            String num_empleados;
+            int No_Empleados;
+            string nombre_empresa;
+            String[] str = ids_usuarios.Split(',');
+
+            double CalificacionFinalCuestionarioIII = 0.00;
+            string CalificacionFinalCuestionarioIIIRes = "";
+            string riesgo="";
+
+
+            using (var db = new csstdura_encuestaEntities())
+            {
+                //con el primer registro sabemos de donde son los empleados(la empresa)
+                 id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + str[0]).FirstOrDefault();
+                 nombre_empresa = db.Database.SqlQuery<String>("select emp_descrip from encuesta_empresa where emp_id = '" + id_empresa + "'").FirstOrDefault();
+                 num_empleados = db.Database.SqlQuery<String>("select emp_no_trabajadores from encuesta_empresa where emp_id = '" + id_empresa + "'").FirstOrDefault();
+                 No_Empleados = Convert.ToInt32(num_empleados);
+            
+
+                if (No_Empleados < 51)
+                {
+                    double valorFinal1 = 0.00;
+                    double valorFinal2 = 0.00;
+                    double valorFinal3 = 0.00;
+                    double valorFinal4 = 0.00;
+                    double valorFinal5 = 0.00;
+                    double valorFinal6 = 0.00;
+                    double valorFinal7 = 0.00;
+                    double valorFinal8 = 0.00;
+                    int _CondicionesAmbienteTrabajo = 0;
+                    int _CargaTrabajo = 0;
+                    int _FaltaControlSobreTrabajo = 0;
+                    int _JornadaTrabajo = 0;
+                    int _InfluenciaTrabajoFueraCentroLaboral = 0;
+                    int _Liderazgo = 0;
+                    int _RelacionesTrabajo = 0;
+                    int _Violencia = 0;
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //condiciones en el ambiente de trabajo
+                        int CondicionesAmbienteTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + value + " " +
+                                                            " and denc_id in (21, 22, 23) ").FirstOrDefault();
+                        _CondicionesAmbienteTrabajo = _CondicionesAmbienteTrabajo + CondicionesAmbienteTrabajo;
+                    }
+                    valorFinal1 = Convert.ToDouble(_CondicionesAmbienteTrabajo) / Convert.ToDouble(str.Length);
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //condiciones en el ambiente de trabajo
+                        int CargaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (24,29,25,26,27,28,61,62,63,30,31,32,33) ").FirstOrDefault();
+                        _CargaTrabajo = _CargaTrabajo + CargaTrabajo;
+                    }
+                    valorFinal2 = Convert.ToDouble(_CargaTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //falta de control sobre el trabajo
+                        int FaltaControlSobreTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (40,41,42,38,39,68,46) ").FirstOrDefault();
+                        _FaltaControlSobreTrabajo = _FaltaControlSobreTrabajo + FaltaControlSobreTrabajo;
+                    }
+                    valorFinal3 = Convert.ToDouble(_FaltaControlSobreTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //jornada de trabajo
+                        int JornadaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (34,35) ").FirstOrDefault();
+                        _JornadaTrabajo = _JornadaTrabajo + JornadaTrabajo;
+                    }
+                    valorFinal4 = Convert.ToDouble(_JornadaTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Interferencia en la relación trabajo-familia
+                        int InfluenciaTrabajoFueraCentroLaboral = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (36,37) ").FirstOrDefault();
+                        _InfluenciaTrabajoFueraCentroLaboral = _InfluenciaTrabajoFueraCentroLaboral + InfluenciaTrabajoFueraCentroLaboral;
+                    }
+                    valorFinal5 = Convert.ToDouble(_InfluenciaTrabajoFueraCentroLaboral) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Liderazgo
+                        int Liderazgo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (43,44,45,47,48) ").FirstOrDefault();
+                        _Liderazgo = _Liderazgo + Liderazgo;
+                    }
+                    valorFinal6 = Convert.ToDouble(_Liderazgo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Relaciones en el trabajo
+                        int RelacionesTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (49,50,51,65,66,67) ").FirstOrDefault();
+                        _RelacionesTrabajo = _RelacionesTrabajo + RelacionesTrabajo;
+                    }
+                    valorFinal7 = Convert.ToDouble(_RelacionesTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Violencia
+                        int Violencia = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 2 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (52,53,54,55,56,57,58,59) ").FirstOrDefault();
+                        _Violencia = _Violencia + Violencia;
+                    }
+                    valorFinal8 = Convert.ToDouble(_Violencia) / Convert.ToDouble(str.Length);
+
+                    CalificacionFinalCuestionarioIII = valorFinal1 + valorFinal2 + valorFinal3 +
+                                                            valorFinal4 + valorFinal5 + valorFinal6 +
+                                                            valorFinal7 + valorFinal8;
+
+                    if (CalificacionFinalCuestionarioIII < 20)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Nulo o Despreciable";
+                        riesgo = "El riesgo resulta despreciable por lo que no se requiere medidas adicionales.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 20 && CalificacionFinalCuestionarioIII < 45)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Bajo";
+                        riesgo = "Es necesario una mayor difusión de la política de prevención de riesgos psicosociales y programas para: la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 45 && CalificacionFinalCuestionarioIII < 70)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Medio";
+                        riesgo = "Medio	Se requiere revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión, mediante un Programa de intervención.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 70 && CalificacionFinalCuestionarioIII < 90)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Alto";
+                        riesgo = "Se requiere realizar un análisis de cada categoría y dominio, de manera que se puedan determinar las acciones de intervención apropiadas a través de un Programa de intervención, que podrá incluir una evaluación específica1 y deberá incluir una campaña de sensibilización, revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 90)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Muy Alto";
+                        riesgo = "Se requiere realizar el análisis de cada categoría y dominio para establecer las acciones de intervención apropiadas, mediante un Programa de intervención que deberá incluir evaluaciones específicas1, y contemplar campañas de sensibilización, revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión.";
+                    }
+                }
+                else
+                {
+                    double valorFinal1 = 0.00;
+                    double valorFinal2 = 0.00;
+                    double valorFinal3 = 0.00;
+                    double valorFinal4 = 0.00;
+                    double valorFinal5 = 0.00;
+                    double valorFinal6 = 0.00;
+                    double valorFinal7 = 0.00;
+                    double valorFinal8 = 0.00;
+                    double valorFinal9 = 0.00;
+                    double valorFinal10 = 0.00;
+                    int _CondicionesAmbienteTrabajo = 0;
+                    int _CargaTrabajo = 0;
+                    int _FaltaControlTrabajo = 0;
+                    int _JornadaTrabajo = 0;
+                    int _InterferenciaRelacionTrabajoFamilia = 0;
+                    int _Liderazgo = 0;
+                    int _RelacionesTrabajo = 0;
+                    int _Violencia = 0;
+                    int _ReconocimientoDesempeño = 0;
+                    int _InsuficienteSentido = 0;
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //condiciones en el ambiente de trabajo
+                        int CondicionesAmbienteTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (69,70,71,72,73) ").FirstOrDefault();
+                        _CondicionesAmbienteTrabajo = _CondicionesAmbienteTrabajo + CondicionesAmbienteTrabajo;
+                    }
+                    valorFinal1 = Convert.ToDouble(_CondicionesAmbienteTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //carga de trabajo
+                        int CargaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (74,80,75,76,77,78,79,134,135,136,137,81,82,83,84) ").FirstOrDefault();
+                        _CargaTrabajo = _CargaTrabajo + CargaTrabajo;
+                    }
+                    valorFinal2 = Convert.ToDouble(_CargaTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Falta de control sobre el trabajo
+                        int FaltaControlTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (93,94,95,96,91,92,97,98,103,104) ").FirstOrDefault();
+                        _FaltaControlTrabajo = _FaltaControlTrabajo + FaltaControlTrabajo;
+                    }
+                    valorFinal3 = Convert.ToDouble(_FaltaControlTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Jornada de trabajo
+                        int JornadaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (85,86) ").FirstOrDefault();
+                        _JornadaTrabajo = _JornadaTrabajo + JornadaTrabajo;
+                    }
+                    valorFinal4 = Convert.ToDouble(_JornadaTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Interferencia en la relación trabajo-familia
+                        int InterferenciaRelacionTrabajoFamilia = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (87,88,89,90) ").FirstOrDefault();
+                        _InterferenciaRelacionTrabajoFamilia = _InterferenciaRelacionTrabajoFamilia + InterferenciaRelacionTrabajoFamilia;
+                    }
+                    valorFinal5 = Convert.ToDouble(_InterferenciaRelacionTrabajoFamilia) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Liderazgo
+                        int Liderazgo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (99,100,101,102,105,106,107,108,109) ").FirstOrDefault();
+                        _Liderazgo = _Liderazgo + Liderazgo;
+                    }
+                    valorFinal6 = Convert.ToDouble(_Liderazgo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Relaciones en el trabajo
+                        int RelacionesTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (110,111,112,113,114,139,140,141,142) ").FirstOrDefault();
+                        _RelacionesTrabajo = _RelacionesTrabajo + RelacionesTrabajo;
+                    }
+                    valorFinal7 = Convert.ToDouble(_RelacionesTrabajo) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Violencia
+                        int Violencia = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (125,126,127,128,129,130,131,132) ").FirstOrDefault();
+                        _Violencia = _Violencia + Violencia;
+                    }
+                    valorFinal8 = Convert.ToDouble(_Violencia) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Reconocimiento del desempeño
+                        int ReconocimientoDesempeño = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (115,116,117,118,119,120) ").FirstOrDefault();
+                        _ReconocimientoDesempeño = _ReconocimientoDesempeño + ReconocimientoDesempeño;
+                    }
+                    valorFinal9 = Convert.ToDouble(_ReconocimientoDesempeño) / Convert.ToDouble(str.Length);
+
+                    for (int x = 0; x < str.Length; x++)
+                    {
+                        int value = Convert.ToInt32(str[x]);
+                        //Insuficiente sentido de pertenencia e, inestabilidad
+                        int InsuficienteSentido = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                                " from encuesta_det_encuesta, encuesta_resultados " +
+                                                                " where denc_encu_id = 3 " +
+                                                                " and resu_denc_id = denc_id " +
+                                                                " and resu_usua_id = " + value + " " +
+                                                                " and denc_id in (124,121,122,123) ").FirstOrDefault();
+                        _InsuficienteSentido = _InsuficienteSentido + InsuficienteSentido;
+                    }
+                    valorFinal10 = Convert.ToDouble(_InsuficienteSentido) / Convert.ToDouble(str.Length);
+
+                    CalificacionFinalCuestionarioIII = valorFinal1 + valorFinal2 + valorFinal3 +
+                                                            valorFinal4 + valorFinal5 + valorFinal6 +
+                                                            valorFinal7 + valorFinal8 + valorFinal9 +
+                                                            valorFinal10;
+                    if (CalificacionFinalCuestionarioIII < 50)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Nulo o Despreciable";
+                        riesgo = "El riesgo resulta despreciable por lo que no se requiere medidas adicionales.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 50 && CalificacionFinalCuestionarioIII < 75)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Bajo";
+                        riesgo = "Es necesario una mayor difusión de la política de prevención de riesgos psicosociales y programas para: la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 75 && CalificacionFinalCuestionarioIII < 99)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Medio";
+                        riesgo = "Medio	Se requiere revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión, mediante un Programa de intervención.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 99 && CalificacionFinalCuestionarioIII < 140)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Alto";
+                        riesgo = "Se requiere realizar un análisis de cada categoría y dominio, de manera que se puedan determinar las acciones de intervención apropiadas a través de un Programa de intervención, que podrá incluir una evaluación específica1 y deberá incluir una campaña de sensibilización, revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión.";
+                    }
+                    else if (CalificacionFinalCuestionarioIII >= 140)
+                    {
+                        CalificacionFinalCuestionarioIIIRes = "Muy Alto";
+                        riesgo = "Se requiere realizar el análisis de cada categoría y dominio para establecer las acciones de intervención apropiadas, mediante un Programa de intervención que deberá incluir evaluaciones específicas1, y contemplar campañas de sensibilización, revisar la política de prevención de riesgos psicosociales y programas para la prevención de los factores de riesgo psicosocial, la promoción de un entorno organizacional favorable y la prevención de la violencia laboral, así como reforzar su aplicación y difusión.";
+                    }
+                
+                
+
+
+                }
+
+                //aqui va el excel
+                byte[] buffer;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    //Todo el documento excel
+                    ExcelPackage ep = new ExcelPackage();
+                    //Crear una hoja
+                    ep.Workbook.Worksheets.Add("Reporte Excel de Resultados de Categoria por empresa");
+                    ExcelWorksheet ew = ep.Workbook.Worksheets[1];
+
+                    //Ponemos nombres de las columnas
+                    ew.Cells[1, 1].Value = "Resultado Final por empresa.";
+                    ew.Cells[2, 1].Value = "Nombre de la Empresa: " + nombre_empresa;
+                    ew.Cells[3, 1].Value = "Resultado Final";
+                    ew.Cells[3, 2].Value = "Suma Total";
+                    ew.Cells[3, 3].Value = "Nivel de Riesgo";
+                    ew.Cells[3, 4].Value = "Necesidad de acción";
+
+
+                    ew.Cells[4, 1].Value = "Calificación final del cuestionario";
+                    ew.Cells[4, 2].Value = CalificacionFinalCuestionarioIII;
+                    ew.Cells[4, 3].Value = CalificacionFinalCuestionarioIIIRes;
+                    ew.Cells[4, 4].Style.WrapText = true;
+                    ew.Cells[4, 4].Value = riesgo;
+
+
+
+                    ew.Column(1).Width = 40;
+                    ew.Column(2).Width = 20;
+                    ew.Column(3).Width = 20;
+                    ew.Column(4).Width = 150;
+                    ew.Row(4).Height = 80;
+
+                    //Para dar formato al titulo
+                    using (var range = ew.Cells[1, 1])
+                    {
+                        //range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Font.Bold = true;
+                        //.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                    }
+
+                    //Para dar color a las columnas
+                    using (var range = ew.Cells[3, 1, 3, 2])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Font.Color.SetColor(Color.White);
+                        range.Style.Fill.BackgroundColor.SetColor(Color.DarkRed);
+                    }
+
+                    using (var range = ew.Cells[3, 3, 3, 4])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Font.Color.SetColor(Color.White);
+                        range.Style.Fill.BackgroundColor.SetColor(Color.DarkRed);
+                    }
+                    ep.SaveAs(ms);
+                    buffer = ms.ToArray();
+
+                }
+
+                return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Resultado_Emp_Fin" + nombre_empresa + ".xlsx");
+            }
+
         }
     }
 
