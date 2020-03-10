@@ -3290,6 +3290,230 @@ namespace EncuestasV2.Controllers
             }
 
         }
+
+        public FileResult AtencionMedica(string ids_usuarios)
+        {
+            //ViewBag.ids = ids_usuarios;
+
+            List<encuesta_usuariosCLS> listaEmpleado = null;
+            String[] str = ids_usuarios.Split(',');
+            int id_empresa = 0;
+            string nombre_empresa="";
+            using (var db = new csstdura_encuestaEntities())
+            {
+                id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + str[0]).FirstOrDefault();
+                nombre_empresa = db.Database.SqlQuery<String>("select emp_descrip from encuesta_empresa where emp_id = '" + id_empresa + "'").FirstOrDefault();
+
+                List<int> Acontecimiento = new List<int>() { 1, 2, 3, 4, 5, 6 };
+                List<int> Recuerdos = new List<int>() { 7, 8 };
+                List<int> Esfuerzo = new List<int>() { 9, 10, 11, 12, 13, 14, 15 };
+                List<int> Afectación = new List<int>() { 16, 17, 18, 19, 20 };
+                List<int> intUsuarios = new List<int>() { };
+
+               
+                for (int x = 0; x < str.Length; x++)
+                {
+                    int value = Convert.ToInt32(str[x]);
+                    intUsuarios.Add(value);
+                }
+
+
+                listaEmpleado = (from resultado in db.encuesta_resultados
+                                 join empleado in db.encuesta_usuarios
+                                 on resultado.resu_usua_id equals empleado.usua_id
+                                 where Acontecimiento.Contains((int)resultado.resu_denc_id)
+                                 && resultado.resu_resultado == "SI"
+                                 && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                 group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                 orderby grp.Key.usua_nombre
+
+                                 select new encuesta_usuariosCLS
+                                 {
+                                     resu_usua_id = grp.Key.resu_usua_id,
+                                     resu_resultado = grp.Count(),
+                                     usua_nombre = grp.Key.usua_nombre,
+                                     resu_seccion_id = 1,
+                                     resu_seccion = "I.- Acontecimiento traumático severo"
+                                 }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Recuerdos.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
+
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 2,
+                                        resu_seccion = "II.- Recuerdos persistentes sobre el acontecimiento"
+                                    }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Esfuerzo.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
+
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 3,
+                                        resu_seccion = "III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento"
+                                    }).Union
+                                 (
+                                    from resultado in db.encuesta_resultados
+                                    join empleado in db.encuesta_usuarios
+                                    on resultado.resu_usua_id equals empleado.usua_id
+                                    where Afectación.Contains((int)resultado.resu_denc_id)
+                                    && resultado.resu_resultado == "SI"
+                                    && intUsuarios.Contains((int)resultado.resu_usua_id)
+                                    group resultado by new { resultado.resu_usua_id, resultado.resu_resultado, empleado.usua_nombre } into grp
+                                    orderby grp.Key.usua_nombre
+
+                                    select new encuesta_usuariosCLS
+                                    {
+                                        resu_usua_id = grp.Key.resu_usua_id,
+                                        resu_resultado = grp.Count(),
+                                        usua_nombre = grp.Key.usua_nombre,
+                                        resu_seccion_id = 4,
+                                        resu_seccion = "IV Afectación"
+                                    }).Distinct().ToList();
+
+            }
+            //aqui va el excel
+            byte[] buffer;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                //Todo el documento excel
+                ExcelPackage ep = new ExcelPackage();
+                //Crear una hoja
+                ep.Workbook.Worksheets.Add("Reporte Excel de Resultados de Categoria por empresa");
+                ExcelWorksheet ew = ep.Workbook.Worksheets[1];
+
+                //Ponemos nombres de las columnas
+                ew.Cells[1, 1].Value = "Atención Medica Empresa:" + nombre_empresa +".";
+                //ew.Cells[2, 1].Value = "Nombre de la Empresa: " + nombre_empresa;
+                ew.Cells[3, 1].Value = "Nombre";
+                ew.Cells[3, 2].Value = "Resultado (Suma de SI)";
+                ew.Cells[3, 3].Value = "Sección";
+                ew.Cells[3, 4].Value = "Acción";
+
+                int nroregistros = listaEmpleado.Count();
+                string accionRes="";
+                for (int i = 0; i < nroregistros; i++)
+                {
+                    Console.WriteLine(listaEmpleado[i].resu_seccion);
+                    if (listaEmpleado[i].resu_seccion_id.Equals(1))
+                    {
+                        if (listaEmpleado[i].resu_resultado > 0)
+                        {
+                            accionRes = "El trabajador REQUIERE atención clínica";
+                        }
+                        else
+                        {
+                            accionRes = "El trabajador NO REQUIERE atención clínica";
+
+                        }
+                    }
+                    if (listaEmpleado[i].resu_seccion_id.Equals(2))
+                    {
+                        if (listaEmpleado[i].resu_resultado > 0)
+                        {
+                            accionRes = "El trabajador REQUIERE atención clínica";
+                        }
+                        else
+                        {
+                            accionRes = "El trabajador NO REQUIERE atención clínica";
+
+                        }
+                    }
+                    if (listaEmpleado[i].resu_seccion_id.Equals(3))
+                    {
+                        if (listaEmpleado[i].resu_resultado > 2)
+                        {
+                            accionRes = "El trabajador REQUIERE atención clínica";
+                        }
+                        else
+                        {
+                            accionRes = "El trabajador NO REQUIERE atención clínica";
+
+                        }
+                    }
+                    if (listaEmpleado[i].resu_seccion_id.Equals(4))
+                    {
+                        if (listaEmpleado[i].resu_resultado > 1)
+                        {
+                            accionRes = "El trabajador REQUIERE atención clínica";
+                        }
+                        else
+                        {
+                            accionRes = "El trabajador NO REQUIERE atención clínica";
+
+                        }
+                    }
+                    ew.Cells[i + 4, 1].Value = listaEmpleado[i].usua_nombre;
+                    ew.Cells[i + 4, 2].Value = listaEmpleado[i].resu_resultado;
+                    ew.Cells[i + 4, 3].Value = listaEmpleado[i].resu_seccion;
+                    ew.Cells[i + 4, 4].Value = accionRes;
+                   
+                 
+                }
+
+                //ew.Cells[4, 1].Value = "Calificación final del cuestionario";
+                //ew.Cells[4, 2].Value = CalificacionFinalCuestionarioIII;
+                //ew.Cells[4, 3].Value = CalificacionFinalCuestionarioIIIRes;
+                //ew.Cells[4, 4].Style.WrapText = true;
+                //ew.Cells[4, 4].Value = riesgo;
+
+
+
+                ew.Column(1).Width = 40;
+                ew.Column(2).Width = 20;
+                ew.Column(3).Width = 60;
+                ew.Column(4).Width = 50;
+               // ew.Row(4).Height = 80;
+
+                //Para dar formato al titulo
+                using (var range = ew.Cells[1, 1])
+                {
+                    //range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Font.Bold = true;
+                    //.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                }
+
+                //Para dar color a las columnas
+                using (var range = ew.Cells[3, 1, 3, 2])
+                {
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Font.Color.SetColor(Color.White);
+                    range.Style.Fill.BackgroundColor.SetColor(Color.DarkRed);
+                }
+
+                using (var range = ew.Cells[3, 3, 3, 4])
+                {
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Font.Color.SetColor(Color.White);
+                    range.Style.Fill.BackgroundColor.SetColor(Color.DarkRed);
+                }
+                ep.SaveAs(ms);
+                buffer = ms.ToArray();
+
+            }
+
+            return File(buffer, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Atencion_Medica_Empresa"+nombre_empresa+".xlsx");
+
+        }
     }
 
 

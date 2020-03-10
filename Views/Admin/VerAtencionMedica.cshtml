@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
     int x = 0;
 }
-
+<input type="hidden" id="ids_usuarios" name="id_usuario" value=@ViewBag.ids />
 <h2>VerAtencionMedica</h2>
 <table class="table">
     <thead class="thead-dark">
@@ -76,4 +76,6 @@
 
 <div>
     @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
+    @Html.ActionLink("Exportar a excel", "AtencionMedica", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
+
 </div>

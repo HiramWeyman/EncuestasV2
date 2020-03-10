@@ -2818,7 +2818,7 @@ namespace EncuestasV2.Controllers
 
         public ActionResult VerAtencionMedica(string ids_usuarios)
         {
-            //ViewBag.ids = ids_usuarios;
+            ViewBag.ids = ids_usuarios;
             
             List<encuesta_usuariosCLS> listaEmpleado = null;
 
