@@ -289,7 +289,7 @@ namespace EncuestasV2.Controllers
                     ExcelWorksheet ew = ep.Workbook.Worksheets[1];
 
                     //Ponemos nombres de las columnas
-                    ew.Cells[1, 1].Value = "CUESTIONARIO PARA IDENTIFICAR A LOS TRABAJADORES QUE FUERON SUJETOS A ACONTECIMIENTOS TRAUMÁTICOS SEVEROS.";
+                    ew.Cells[1, 1].Value = "CUESTIONARIO I.";
                     ew.Cells[2, 1].Value = "Nombre del Empleado: " + nombreEmpleado;
                     ew.Cells[3, 1].Value = "Pregunta";
                     ew.Cells[3, 2].Value = "Respuesta";
@@ -305,7 +305,44 @@ namespace EncuestasV2.Controllers
                         range.Style.Font.Bold = true;
                         //.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
                     }
+                    //Poner en negritas los titulos
+                    using (var range = ew.Cells[4,1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
 
+                    using (var range = ew.Cells[14, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
+
+                    using (var range = ew.Cells[20, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
+
+                    using (var range = ew.Cells[31, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
+
+                    //Dar negritas a valoracion clinica
+                    using (var range = ew.Cells[12, 1])
+                    { 
+                        range.Style.Font.Bold = true; 
+                    }
+                    using (var range = ew.Cells[18, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
+                    using (var range = ew.Cells[29, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
+                    using (var range = ew.Cells[38, 1])
+                    {
+                        range.Style.Font.Bold = true;
+                    }
                     //Para dar color a las columnas
                     using (var range = ew.Cells[3, 1, 3, 2])
                     {
@@ -314,11 +351,25 @@ namespace EncuestasV2.Controllers
                         range.Style.Fill.BackgroundColor.SetColor(Color.DarkRed);
                     }
 
-                    //Para dar color a las celdas
-                    using (var range = ew.Cells[25,1])
+                   //Poner fondos amarillos
+                    using (var range = ew.Cells[12,1])
                     {
                         range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        //range.Style.Font.Color.SetColor(Color.Yellow);
+                        range.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                    }
+                    using (var range = ew.Cells[18, 1])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                    }
+                    using (var range = ew.Cells[29, 1])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                    }
+                    using (var range = ew.Cells[38, 1])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
                         range.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
                     }
 
@@ -333,39 +384,91 @@ namespace EncuestasV2.Controllers
                         if (list[i].resu_resultado == "SI") {
                             x = 1;
                         }
-                        ew.Cells[i + 4, 1].Value = list[i].denc_descrip;
-                        ew.Cells[i + 4, 2].Value = list[i].resu_resultado;
+                        ew.Cells[4, 1].Value = "I.- Acontecimiento traumático severo";
+                        ew.Cells[i + 5, 1].Value = list[i].denc_descrip;
+                        ew.Cells[i + 5, 2].Value = list[i].resu_resultado;
+                     
                         if (x.Equals(1))
                         {
 
-                            ew.Cells[25, 1].Value = "El Trabajador requiere valoración CLINICA";
+                            ew.Cells[12, 1].Value = "El Trabajador requiere valoración CLINICA";
                         }
                         else
                         {
 
-                            ew.Cells[25, 1].Value = "El Trabajador NO requiere valoración CLINICA";
+                            ew.Cells[12, 1].Value = "El Trabajador NO requiere valoración CLINICA";
 
                         }
                     }
 
-                    for (int i = 0; i < nroregistros2; i++) {
+                    for (int i = 0; i < nroregistros2; i++)
+                    {
 
-                        ew.Cells[i + 10, 1].Value = list2[i].denc_descrip;
-                        ew.Cells[i + 10, 2].Value = list2[i].resu_resultado;
+                        if (list2[i].resu_resultado == "SI")
+                        {
+                            x = 1;
+                        }
+                        ew.Cells[14, 1].Value = "II.- Recuerdos persistentes sobre el acontecimiento";
+                        ew.Cells[i + 15, 1].Value = list2[i].denc_descrip;
+                        ew.Cells[i + 15, 2].Value = list2[i].resu_resultado;
+
+                        if (x.Equals(1))
+                        {
+
+                            ew.Cells[18, 1].Value = "El Trabajador requiere valoración CLINICA";
+                        }
+                        else
+                        {
+
+                            ew.Cells[18, 1].Value = "El Trabajador NO requiere valoración CLINICA";
+
+                        }
                     }
 
                     for (int i = 0; i < nroregistros3; i++)
                     {
+                        if (list3[i].resu_resultado.Equals("SI"))
+                        {
+                            x = 1;
+                        }
+                        ew.Cells[20, 1].Value = "III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento";
+                        ew.Cells[i + 21, 1].Value = list3[i].denc_descrip;
+                        ew.Cells[i + 21, 2].Value = list3[i].resu_resultado;
+                        
+                        if (x >= 3)
+                        {
 
-                        ew.Cells[i + 12, 1].Value = list3[i].denc_descrip;
-                        ew.Cells[i + 12, 2].Value = list3[i].resu_resultado;
+                            ew.Cells[29, 1].Value = "El Trabajador requiere valoración CLINICA";
+                        }
+                        else
+                        {
+
+                            ew.Cells[29, 1].Value = "El Trabajador NO requiere valoración CLINICA";
+
+                        }
                     }
 
                     for (int i = 0; i < nroregistros4; i++)
                     {
+                        if (list4[i].resu_resultado.Equals("SI"))
+                        {
+                            x = x+1;
+                        }
+                        ew.Cells[31, 1].Value = "IV.- Afectación";
+                        ew.Cells[i + 32, 1].Value = list4[i].denc_descrip;
+                        ew.Cells[i + 32, 2].Value = list4[i].resu_resultado;
 
-                        ew.Cells[i + 19, 1].Value = list4[i].denc_descrip;
-                        ew.Cells[i + 19, 2].Value = list4[i].resu_resultado;
+                        if (x >= 2)
+                        {
+
+                            ew.Cells[38, 1].Value = "El Trabajador requiere valoración CLINICA";
+                        }
+                        else
+                        {
+
+                            ew.Cells[38, 1].Value = "El Trabajador NO requiere valoración CLINICA";
+
+                        }
                     }
                     ep.SaveAs(ms);
                     buffer = ms.ToArray();

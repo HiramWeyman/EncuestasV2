@@ -5,6 +5,16 @@
     int x = 0;
 }
 
+<script>
+
+        function VerReporte() {
+
+             window.open('@Url.Action("generarPDFResultados1", "Pdf", new { id = @ViewBag.id_usuario })');
+
+
+         }
+
+</script>
 <input type="hidden" id="id_usuario" name="id_usuario" value=@ViewBag.id_usuario />
 <h4><strong>CUESTIONARIO PARA IDENTIFICAR A LOS TRABAJADORES QUE FUERON SUJETOS A ACONTECIMIENTOS TRAUMÁTICOS SEVEROS.</strong></h4>
 <h5><strong>CUESTIONARIO 1. PARTE 3</strong></h5><p>Nombre del empleado: <strong>@ViewBag.nombreEmpleado</strong></p>

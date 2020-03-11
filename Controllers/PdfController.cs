@@ -238,5 +238,141 @@ namespace EncuestasV2.Controllers
             return File(buffer, "application/pdf");
 
         }
+
+        public FileResult generarPDFResultados1(int id)
+        {
+            List<encuesta_mostrarPreguntas2CLS> list;
+            List<encuesta_mostrarPreguntas2CLS> list2;
+            List<encuesta_mostrarPreguntas2CLS> list3;
+            List<encuesta_mostrarPreguntas2CLS> list4;
+
+            int x = 0;
+            using (var db = new csstdura_encuestaEntities())
+            {
+                list = (from resultados in db.encuesta_resultados
+                        join det_encuesta in db.encuesta_det_encuesta
+                        on resultados.resu_denc_id equals det_encuesta.denc_id
+                        where resultados.resu_usua_id == id
+                        && det_encuesta.denc_parte == 1
+                        select new encuesta_mostrarPreguntas2CLS
+                        {
+                            resu_usua_id = id,
+                            denc_descrip = det_encuesta.denc_descrip,
+                            resu_resultado = resultados.resu_resultado,
+                            denc_parte = det_encuesta.denc_parte,
+                        }).ToList();
+
+                list2 = (from resultados in db.encuesta_resultados
+                         join det_encuesta in db.encuesta_det_encuesta
+                         on resultados.resu_denc_id equals det_encuesta.denc_id
+                         where resultados.resu_usua_id == id
+                         && det_encuesta.denc_parte == 2
+                         select new encuesta_mostrarPreguntas2CLS
+                         {
+                             resu_usua_id = id,
+                             denc_descrip = det_encuesta.denc_descrip,
+                             resu_resultado = resultados.resu_resultado,
+                             denc_parte = det_encuesta.denc_parte,
+                         }).ToList();
+
+                list3 = (from resultados in db.encuesta_resultados
+                         join det_encuesta in db.encuesta_det_encuesta
+                         on resultados.resu_denc_id equals det_encuesta.denc_id
+                         where resultados.resu_usua_id == id
+                         && det_encuesta.denc_parte == 3
+                         select new encuesta_mostrarPreguntas2CLS
+                         {
+                             resu_usua_id = id,
+                             denc_descrip = det_encuesta.denc_descrip,
+                             resu_resultado = resultados.resu_resultado,
+                             denc_parte = det_encuesta.denc_parte,
+                         }).ToList();
+
+                list4 = (from resultados in db.encuesta_resultados
+                         join det_encuesta in db.encuesta_det_encuesta
+                         on resultados.resu_denc_id equals det_encuesta.denc_id
+                         where resultados.resu_usua_id == id
+                         && det_encuesta.denc_parte == 4
+                         select new encuesta_mostrarPreguntas2CLS
+                         {
+                             resu_usua_id = id,
+                             denc_descrip = det_encuesta.denc_descrip,
+                             resu_resultado = resultados.resu_resultado,
+                             denc_parte = det_encuesta.denc_parte,
+                         }).ToList();
+
+
+                string nombreEmpleado = db.Database.SqlQuery<string>("select usua_nombre from encuesta_usuarios where usua_id =" + id).FirstOrDefault();
+                int id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + id).FirstOrDefault();
+                String num_empleados = db.Database.SqlQuery<String>("select emp_no_trabajadores from encuesta_empresa where emp_id = '" + id_empresa + "'").FirstOrDefault();
+
+                iTextSharp.text.Font font1 = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+                iTextSharp.text.Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
+
+                Document doc = new Document(iTextSharp.text.PageSize.A4_LANDSCAPE, 5, 5, 0, 0);
+                byte[] buffer;
+                using (MemoryStream ms = new MemoryStream())
+                {
+
+                    PdfWriter.GetInstance(doc, ms);
+                    doc.Open();
+                    Paragraph title = new Paragraph("CUESTIONARIO I", font1);
+                    title.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(title);
+
+                    Paragraph espacio = new Paragraph(" ");
+                    doc.Add(espacio);
+
+                    Paragraph Nombre_emp = new Paragraph("NOMBRE DEL EMPLEADO: "+nombreEmpleado, font1);
+                    Nombre_emp.Alignment = Element.ALIGN_LEFT;
+                    doc.Add(Nombre_emp);
+
+                    doc.Add(espacio);
+
+                    //Creando la tabla
+                    PdfPTable tabla = new PdfPTable(2);
+                    tabla.WidthPercentage = 100f;
+                    //Asignando los anchos de las columnas
+                    float[] valores = new float[2] { 150,30 };
+                    tabla.SetWidths(valores);
+
+                    //Creando celdas agregando contenido
+                    PdfPCell celda1 = new PdfPCell(new Phrase("Pregunta", font));
+                    celda1.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda1.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla.AddCell(celda1);
+
+                    PdfPCell celda2 = new PdfPCell(new Phrase("Respuesta", font));
+                    celda2.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda2.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla.AddCell(celda2);
+
+                 
+
+                    //Poniendo datos en la la tabla
+                    List<encuesta_usuariosCLS> listaUser = (List<encuesta_usuariosCLS>)Session["ListaUser"];
+                    int nroregistros = list.Count();
+                    for (int i = 0; i < nroregistros; i++)
+                    {
+                        tabla.AddCell(new PdfPCell(new Phrase(list[i].denc_descrip.ToString(), font)));
+                        tabla.AddCell(new PdfPCell(new Phrase(list[i].resu_resultado.ToString(), font)));
+          
+                       // tabla.AddCell(new PdfPCell(new Phrase(listaUser[i].usua_presento, font))).HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+
+                    }
+                    //Agregando la tabla al documento
+                    doc.Add(tabla);
+                    doc.Close();
+
+                    buffer = ms.ToArray();
+
+                }
+                return File(buffer, "application/pdf");
+
+
+            }
+
+        }
+
     }
 }
