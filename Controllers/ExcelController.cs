@@ -219,7 +219,10 @@ namespace EncuestasV2.Controllers
             List<encuesta_mostrarPreguntas2CLS> list3;
             List<encuesta_mostrarPreguntas2CLS> list4;
 
+            int w = 0;
             int x = 0;
+            int y = 0;
+            int z = 0;
             using (var db = new csstdura_encuestaEntities())
             {
                 list = (from resultados in db.encuesta_resultados
@@ -295,7 +298,7 @@ namespace EncuestasV2.Controllers
                     ew.Cells[3, 2].Value = "Respuesta";
              
 
-                    ew.Column(1).Width = 150;
+                    ew.Column(1).Width = 120;
                     ew.Column(2).Width = 30;
 
                     //Para dar formato al titulo
@@ -382,13 +385,13 @@ namespace EncuestasV2.Controllers
                     for (int i = 0; i < nroregistros; i++)
                     {
                         if (list[i].resu_resultado == "SI") {
-                            x = 1;
+                            w = 1;
                         }
                         ew.Cells[4, 1].Value = "I.- Acontecimiento traumático severo";
                         ew.Cells[i + 5, 1].Value = list[i].denc_descrip;
                         ew.Cells[i + 5, 2].Value = list[i].resu_resultado;
                      
-                        if (x.Equals(1))
+                        if (w.Equals(1))
                         {
 
                             ew.Cells[12, 1].Value = "El Trabajador requiere valoración CLINICA";
@@ -429,13 +432,13 @@ namespace EncuestasV2.Controllers
                     {
                         if (list3[i].resu_resultado.Equals("SI"))
                         {
-                            x = 1;
+                            y = y+1;
                         }
                         ew.Cells[20, 1].Value = "III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento";
                         ew.Cells[i + 21, 1].Value = list3[i].denc_descrip;
                         ew.Cells[i + 21, 2].Value = list3[i].resu_resultado;
                         
-                        if (x >= 3)
+                        if (y >= 3)
                         {
 
                             ew.Cells[29, 1].Value = "El Trabajador requiere valoración CLINICA";
@@ -452,13 +455,13 @@ namespace EncuestasV2.Controllers
                     {
                         if (list4[i].resu_resultado.Equals("SI"))
                         {
-                            x = x+1;
+                            z = z+1;
                         }
                         ew.Cells[31, 1].Value = "IV.- Afectación";
                         ew.Cells[i + 32, 1].Value = list4[i].denc_descrip;
                         ew.Cells[i + 32, 2].Value = list4[i].resu_resultado;
 
-                        if (x >= 2)
+                        if (z >= 2)
                         {
 
                             ew.Cells[38, 1].Value = "El Trabajador requiere valoración CLINICA";

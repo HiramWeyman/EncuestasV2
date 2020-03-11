@@ -246,7 +246,10 @@ namespace EncuestasV2.Controllers
             List<encuesta_mostrarPreguntas2CLS> list3;
             List<encuesta_mostrarPreguntas2CLS> list4;
 
+            int w = 0;
             int x = 0;
+            int y = 0;
+            int z = 0;
             using (var db = new csstdura_encuestaEntities())
             {
                 list = (from resultados in db.encuesta_resultados
@@ -309,24 +312,33 @@ namespace EncuestasV2.Controllers
                 iTextSharp.text.Font font1 = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
                 iTextSharp.text.Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
 
-                Document doc = new Document(iTextSharp.text.PageSize.A4_LANDSCAPE, 5, 5, 0, 0);
+                Document doc = new Document(iTextSharp.text.PageSize.A4_LANDSCAPE, 30, 30, 10, 10);
                 byte[] buffer;
                 using (MemoryStream ms = new MemoryStream())
                 {
 
                     PdfWriter.GetInstance(doc, ms);
                     doc.Open();
-                    Paragraph title = new Paragraph("CUESTIONARIO I", font1);
+                    Paragraph espacio = new Paragraph(" ");
+                    Paragraph linea = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 40.0F, BaseColor.BLACK, Element.ALIGN_CENTER, 1)));
+                    Paragraph firma = new Paragraph("FIRMA");
+                    Paragraph title = new Paragraph("Consultoría y Soluciones en Seguridad en el Trabajo", font1);
                     title.Alignment = Element.ALIGN_CENTER;
                     doc.Add(title);
-
-                    Paragraph espacio = new Paragraph(" ");
+      
+                    Paragraph title2 = new Paragraph("CUESTIONARIO I", font1);
+                    title2.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(title2);
                     doc.Add(espacio);
 
                     Paragraph Nombre_emp = new Paragraph("NOMBRE DEL EMPLEADO: "+nombreEmpleado, font1);
                     Nombre_emp.Alignment = Element.ALIGN_LEFT;
                     doc.Add(Nombre_emp);
+                    doc.Add(espacio);
 
+                    Paragraph seccion1 = new Paragraph("I.- Acontecimiento traumático severo ", font1);
+                    seccion1.Alignment = Element.ALIGN_LEFT;
+                    doc.Add(seccion1);
                     doc.Add(espacio);
 
                     //Creando la tabla
@@ -350,10 +362,14 @@ namespace EncuestasV2.Controllers
                  
 
                     //Poniendo datos en la la tabla
-                    List<encuesta_usuariosCLS> listaUser = (List<encuesta_usuariosCLS>)Session["ListaUser"];
+                 
                     int nroregistros = list.Count();
                     for (int i = 0; i < nroregistros; i++)
                     {
+                        if (list[i].resu_resultado == "SI")
+                        {
+                            w = 1;
+                        }
                         tabla.AddCell(new PdfPCell(new Phrase(list[i].denc_descrip.ToString(), font)));
                         tabla.AddCell(new PdfPCell(new Phrase(list[i].resu_resultado.ToString(), font)));
           
@@ -362,6 +378,218 @@ namespace EncuestasV2.Controllers
                     }
                     //Agregando la tabla al documento
                     doc.Add(tabla);
+                    if (w.Equals(1))
+                    {
+                        Chunk chunk = new Chunk("El trabajador requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+                        
+                    }
+                    else
+                    {
+
+                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+                    }
+                    doc.Add(espacio);
+
+                    //Tabla2
+                    Paragraph seccion2 = new Paragraph("II.- Recuerdos persistentes sobre el acontecimiento ", font1);
+                    seccion2.Alignment = Element.ALIGN_LEFT;
+                    doc.Add(seccion2);
+                    doc.Add(espacio);
+
+                    //Creando la tabla
+                    PdfPTable tabla2 = new PdfPTable(2);
+                    tabla2.WidthPercentage = 100f;
+                    //Asignando los anchos de las columnas            
+                    tabla2.SetWidths(valores);
+
+                    //Creando celdas agregando contenido
+                    celda1 = new PdfPCell(new Phrase("Pregunta", font));
+                    celda1.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda1.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla2.AddCell(celda1);
+
+                    celda2 = new PdfPCell(new Phrase("Respuesta", font));
+                    celda2.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda2.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla2.AddCell(celda2);
+
+
+
+                    //Poniendo datos en la la tabla
+         
+                    int nroregistros2 = list2.Count();
+                    for (int i = 0; i < nroregistros2; i++)
+                    {
+                        if (list2[i].resu_resultado == "SI")
+                        {
+                            x = 1;
+                        }
+                        tabla2.AddCell(new PdfPCell(new Phrase(list2[i].denc_descrip.ToString(), font)));
+                        tabla2.AddCell(new PdfPCell(new Phrase(list2[i].resu_resultado.ToString(), font)));
+
+                    }
+                    //Agregando la tabla al documento
+                    doc.Add(tabla2);
+                    if (x.Equals(1))
+                    {
+                        Chunk chunk = new Chunk("El trabajador requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+
+                    }
+                    else
+                    {
+
+                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+                    }
+                    doc.Add(espacio);
+
+                    //Tabla3
+                    Paragraph seccion3 = new Paragraph("III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento ", font1);
+                    seccion3.Alignment = Element.ALIGN_LEFT;
+                    doc.Add(seccion3);
+                    doc.Add(espacio);
+
+                    //Creando la tabla
+                    PdfPTable tabla3 = new PdfPTable(2);
+                    tabla3.WidthPercentage = 100f;
+                    //Asignando los anchos de las columnas            
+                    tabla3.SetWidths(valores);
+
+                    //Creando celdas agregando contenido
+                    celda1 = new PdfPCell(new Phrase("Pregunta", font));
+                    celda1.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda1.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla3.AddCell(celda1);
+
+                    celda2 = new PdfPCell(new Phrase("Respuesta", font));
+                    celda2.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda2.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla3.AddCell(celda2);
+
+
+
+                    //Poniendo datos en la la tabla
+
+                    int nroregistros3 = list3.Count();
+                    for (int i = 0; i < nroregistros3; i++)
+                    {
+                        if (list3[i].resu_resultado == "SI")
+                        {
+                            y =y+ 1;
+                        }
+                        tabla3.AddCell(new PdfPCell(new Phrase(list3[i].denc_descrip.ToString(), font)));
+                        tabla3.AddCell(new PdfPCell(new Phrase(list3[i].resu_resultado.ToString(), font)));
+
+                    }
+                    //Agregando la tabla al documento
+                    doc.Add(tabla3);
+                    if (y>=3)
+                    {
+                        Chunk chunk = new Chunk("El trabajador requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+
+                    }
+                    else
+                    {
+
+                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+                    }
+                    doc.Add(espacio);
+
+                    //Tabla4
+                    Paragraph seccion4 = new Paragraph("IV.- Afectación ", font1);
+                    seccion4.Alignment = Element.ALIGN_LEFT;
+                    doc.Add(seccion4);
+                    doc.Add(espacio);
+                    //Creando la tabla
+                    PdfPTable tabla4 = new PdfPTable(2);
+                    tabla4.WidthPercentage = 100f;
+                    //Asignando los anchos de las columnas            
+                    tabla4.SetWidths(valores);
+
+                    //Creando celdas agregando contenido
+                    celda1 = new PdfPCell(new Phrase("Pregunta", font));
+                    celda1.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda1.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla4.AddCell(celda1);
+
+                    celda2 = new PdfPCell(new Phrase("Respuesta", font));
+                    celda2.BackgroundColor = new BaseColor(240, 240, 240);
+                    celda2.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                    tabla4.AddCell(celda2);
+
+
+
+                    //Poniendo datos en la la tabla
+
+                    int nroregistros4 = list4.Count();
+                    for (int i = 0; i < nroregistros4; i++)
+                    {
+                        if (list4[i].resu_resultado == "SI")
+                        {
+                            z = z + 1;
+                        }
+                        tabla4.AddCell(new PdfPCell(new Phrase(list4[i].denc_descrip.ToString(), font)));
+                        tabla4.AddCell(new PdfPCell(new Phrase(list4[i].resu_resultado.ToString(), font)));
+
+                    }
+                    //Agregando la tabla al documento
+                    doc.Add(tabla4);
+                    if (y >= 2)
+                    {
+                        Chunk chunk = new Chunk("El trabajador requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+
+                    }
+                    else
+                    {
+
+                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        chunk.SetBackground(BaseColor.YELLOW);
+                        Paragraph p = new Paragraph(chunk);
+                        p.Alignment = Element.ALIGN_LEFT;
+                        doc.Add(p);
+
+                    }
+                    doc.Add(espacio);
+                    doc.Add(espacio);
+                    doc.Add(espacio);
+
+                    doc.Add(linea);
+                    firma.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(firma);
                     doc.Close();
 
                     buffer = ms.ToArray();
