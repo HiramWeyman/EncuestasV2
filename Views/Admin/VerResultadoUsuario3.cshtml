@@ -46,6 +46,7 @@
         <div>
             @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
             @Html.ActionLink("Exportar a Excel", "generarExcelResultados1", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
+            <button onclick="VerReporte()" class="btn btn-danger my-2 my-sm-0">Exportar a PDF</button>
             @Html.ActionLink("Siguiente", "VerResultadoUsuario4", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
         </div>
     }
@@ -55,6 +56,7 @@
         <div>
             @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
             @Html.ActionLink("Exportar a Excel", "generarExcelResultados1", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
+            <button onclick="VerReporte()" class="btn btn-danger my-2 my-sm-0">Exportar a PDF</button>
             @Html.ActionLink("Siguiente", "VerResultadoUsuario4", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
         </div>
     }

@@ -576,7 +576,7 @@ namespace EncuestasV2.Controllers
                     else
                     {
 
-                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        Chunk chunk = new Chunk("El trabajador no requiere valoración clínica ", font1);
                         chunk.SetBackground(BaseColor.YELLOW);
                         Paragraph p = new Paragraph(chunk);
                         p.Alignment = Element.ALIGN_LEFT;
@@ -599,6 +599,269 @@ namespace EncuestasV2.Controllers
 
 
             }
+
+        }
+
+        public FileResult generarPDFGuiaII(int id)
+        {
+
+            string CondicionesAmbienteTrabajoRes = "";
+            string CargaTrabajoRes = "";
+            string FaltaControlSobreTrabajoRes = "";
+            string JornadaTrabajoRes = "";
+            string InfluenciaTrabajoFueraCentroLaboralRes = "";
+            string LiderazgoRes = "";
+            string RelacionesTrabajoRes = "";
+            string ViolenciaRes = "";
+            string nombreEmpleado;
+            int CondicionesAmbienteTrabajo;
+            int CargaTrabajo;
+            int FaltaControlSobreTrabajo;
+            int JornadaTrabajo;
+            int InfluenciaTrabajoFueraCentroLaboral;
+            int Liderazgo;
+            int RelacionesTrabajo;
+            int Violencia;
+
+            using (var db = new csstdura_encuestaEntities())
+            {
+                //condiciones en el ambiente de trabajo
+                CondicionesAmbienteTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + id + " " +
+                                                            " and denc_id in (21, 22, 23) ").FirstOrDefault();
+
+                //resultados en el ambiente de trabajo
+                if (CondicionesAmbienteTrabajo < 3) { CondicionesAmbienteTrabajoRes = "Nulo o Despreciable"; }
+                else if (CondicionesAmbienteTrabajo >= 3 && CondicionesAmbienteTrabajo <= 5) { CondicionesAmbienteTrabajoRes = "Bajo"; }
+                else if (CondicionesAmbienteTrabajo >= 5 && CondicionesAmbienteTrabajo < 7) { CondicionesAmbienteTrabajoRes = "Medio"; }
+                else if (CondicionesAmbienteTrabajo >= 7 && CondicionesAmbienteTrabajo < 9) { CondicionesAmbienteTrabajoRes = "Alto"; }
+                else if (CondicionesAmbienteTrabajo >= 9) { CondicionesAmbienteTrabajoRes = "Muy Alto"; }
+
+
+                //condiciones en el ambiente de trabajo
+                CargaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                           " from encuesta_det_encuesta, encuesta_resultados " +
+                                                           " where denc_encu_id = 2 " +
+                                                           " and resu_denc_id = denc_id " +
+                                                           " and resu_usua_id = " + id + " " +
+                                                           " and denc_id in (24,29,25,26,27,28,61,62,63,30,31,32,33) ").FirstOrDefault();
+
+                //resultados en carga de trabajo
+                if (CargaTrabajo < 12) { CargaTrabajoRes = "Nulo o Despreciable"; }
+                else if (CargaTrabajo >= 12 && CargaTrabajo < 16) { CargaTrabajoRes = "Bajo"; }
+                else if (CargaTrabajo >= 16 && CargaTrabajo < 20) { CargaTrabajoRes = "Medio"; }
+                else if (CargaTrabajo >= 20 && CargaTrabajo < 24) { CargaTrabajoRes = "Alto"; }
+                else if (CargaTrabajo >= 24) { CargaTrabajoRes = "Muy Alto"; }
+
+
+                //falta de control sobre el trabajo
+                FaltaControlSobreTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + id + " " +
+                                                            " and denc_id in (40,41,42,38,39,68,46) ").FirstOrDefault();
+
+                //resultados en falta de control sobre el trabajo
+                if (FaltaControlSobreTrabajo < 5) { FaltaControlSobreTrabajoRes = "Nulo o Despreciable"; }
+                else if (FaltaControlSobreTrabajo >= 5 && FaltaControlSobreTrabajo < 8) { FaltaControlSobreTrabajoRes = "Bajo"; }
+                else if (FaltaControlSobreTrabajo >= 8 && FaltaControlSobreTrabajo < 11) { FaltaControlSobreTrabajoRes = "Medio"; }
+                else if (FaltaControlSobreTrabajo >= 11 && FaltaControlSobreTrabajo < 14) { FaltaControlSobreTrabajoRes = "Alto"; }
+                else if (FaltaControlSobreTrabajo >= 14) { FaltaControlSobreTrabajoRes = "Muy Alto"; }
+
+                //jornada de trabajo
+                JornadaTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + id + " " +
+                                                            " and denc_id in (34,35) ").FirstOrDefault();
+
+                //resultados en jornada de trabajo
+                if (JornadaTrabajo < 1) { JornadaTrabajoRes = "Nulo o Despreciable"; }
+                else if (JornadaTrabajo >= 1 && JornadaTrabajo < 2) { JornadaTrabajoRes = "Bajo"; }
+                else if (JornadaTrabajo >= 2 && JornadaTrabajo < 4) { JornadaTrabajoRes = "Medio"; }
+                else if (JornadaTrabajo >= 4 && JornadaTrabajo < 6) { JornadaTrabajoRes = "Alto"; }
+                else if (JornadaTrabajo >= 6) { JornadaTrabajoRes = "Muy Alto"; }
+
+                //Interferencia en la relación trabajo-familia
+                InfluenciaTrabajoFueraCentroLaboral = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + id + " " +
+                                                            " and denc_id in (36,37) ").FirstOrDefault();
+
+                //resultados en InfluenciaTrabajoFueraCentroLaboral
+                if (InfluenciaTrabajoFueraCentroLaboral < 1) { InfluenciaTrabajoFueraCentroLaboralRes = "Nulo o Despreciable"; }
+                else if (InfluenciaTrabajoFueraCentroLaboral >= 1 && InfluenciaTrabajoFueraCentroLaboral < 2) { InfluenciaTrabajoFueraCentroLaboralRes = "Bajo"; }
+                else if (InfluenciaTrabajoFueraCentroLaboral >= 2 && InfluenciaTrabajoFueraCentroLaboral < 4) { InfluenciaTrabajoFueraCentroLaboralRes = "Medio"; }
+                else if (InfluenciaTrabajoFueraCentroLaboral >= 4 && InfluenciaTrabajoFueraCentroLaboral < 6) { InfluenciaTrabajoFueraCentroLaboralRes = "Alto"; }
+                else if (InfluenciaTrabajoFueraCentroLaboral >= 6) { InfluenciaTrabajoFueraCentroLaboralRes = "Muy Alto"; }
+
+                //Liderazgo
+                Liderazgo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                            " from encuesta_det_encuesta, encuesta_resultados " +
+                                                            " where denc_encu_id = 2 " +
+                                                            " and resu_denc_id = denc_id " +
+                                                            " and resu_usua_id = " + id + " " +
+                                                            " and denc_id in (43,44,45,47,48) ").FirstOrDefault();
+
+                //resultados en Liderazgo
+                if (Liderazgo < 3) { LiderazgoRes = "Nulo o Despreciable"; }
+                else if (Liderazgo >= 3 && Liderazgo < 5) { LiderazgoRes = "Bajo"; }
+                else if (Liderazgo >= 5 && Liderazgo < 8) { LiderazgoRes = "Medio"; }
+                else if (Liderazgo >= 8 && Liderazgo < 11) { LiderazgoRes = "Alto"; }
+                else if (Liderazgo >= 11) { LiderazgoRes = "Muy Alto"; }
+
+                //Relaciones en el trabajo
+                RelacionesTrabajo = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                          " from encuesta_det_encuesta, encuesta_resultados " +
+                                                          " where denc_encu_id = 2 " +
+                                                          " and resu_denc_id = denc_id " +
+                                                          " and resu_usua_id = " + id + " " +
+                                                          " and denc_id in (49,50,51,65,66,67) ").FirstOrDefault();
+
+                //resultados en Relaciones en el trabajo
+                if (RelacionesTrabajo < 5) { RelacionesTrabajoRes = "Nulo o Despreciable"; }
+                else if (RelacionesTrabajo >= 5 && RelacionesTrabajo < 8) { RelacionesTrabajoRes = "Bajo"; }
+                else if (RelacionesTrabajo >= 8 && RelacionesTrabajo < 11) { RelacionesTrabajoRes = "Medio"; }
+                else if (RelacionesTrabajo >= 11 && RelacionesTrabajo < 14) { RelacionesTrabajoRes = "Alto"; }
+                else if (RelacionesTrabajo >= 14) { RelacionesTrabajoRes = "Muy Alto"; }
+
+
+                //Violencia
+                Violencia = db.Database.SqlQuery<int>("select sum(convert(int, resu_resultado)) " +
+                                                           " from encuesta_det_encuesta, encuesta_resultados " +
+                                                           " where denc_encu_id = 2 " +
+                                                           " and resu_denc_id = denc_id " +
+                                                           " and resu_usua_id = " + id + " " +
+                                                           " and denc_id in (52,53,54,55,56,57,58,59) ").FirstOrDefault();
+
+                //resultados en Violencia
+                if (Violencia < 7) { ViolenciaRes = "Nulo o Despreciable"; }
+                else if (Violencia >= 7 && Violencia < 10) { ViolenciaRes = "Bajo"; }
+                else if (Violencia >= 10 && Violencia < 13) { ViolenciaRes = "Medio"; }
+                else if (Violencia >= 13 && Violencia < 16) { ViolenciaRes = "Alto"; }
+                else if (Violencia >= 16) { ViolenciaRes = "Muy Alto"; }
+
+
+
+                nombreEmpleado = db.Database.SqlQuery<string>("select usua_nombre from encuesta_usuarios where usua_id =" + id).FirstOrDefault();
+            }
+
+
+            iTextSharp.text.Font font1 = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+            iTextSharp.text.Font font2 = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+            iTextSharp.text.Font font = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
+
+            Document doc = new Document(iTextSharp.text.PageSize.A4_LANDSCAPE, 30, 30, 10, 10);
+            byte[] buffer;
+            using (MemoryStream ms = new MemoryStream())
+            {
+
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+                Paragraph espacio = new Paragraph(" ");
+                Paragraph linea = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 40.0F, BaseColor.BLACK, Element.ALIGN_CENTER, 1)));
+                Paragraph firma = new Paragraph("FIRMA");
+                Paragraph title = new Paragraph("Consultoría y Soluciones en Seguridad en el Trabajo", font1);
+                title.Alignment = Element.ALIGN_CENTER;
+                Paragraph title2 = new Paragraph("CUESTIONARIO II", font1);
+                title2.Alignment = Element.ALIGN_CENTER;
+
+                doc.Add(title);
+                doc.Add(title2);
+                doc.Add(espacio);
+
+                Paragraph Nombre_emp = new Paragraph("NOMBRE DEL EMPLEADO: " + nombreEmpleado, font1);
+                Nombre_emp.Alignment = Element.ALIGN_LEFT;
+                doc.Add(Nombre_emp);
+                doc.Add(espacio);
+
+                Paragraph seccion1 = new Paragraph("CUESTIONARIO PARA IDENTIFICAR LOS FACTORES DE RIESGO PSICOSOCIAL EN LOS CENTROS DE TRABAJO. ", font2);
+                seccion1.Alignment = Element.ALIGN_LEFT;
+                doc.Add(seccion1);
+                doc.Add(espacio);
+
+                //Creando la tabla
+                PdfPTable tabla = new PdfPTable(3);
+                tabla.WidthPercentage = 100f;
+                //Asignando los anchos de las columnas
+                float[] valores = new float[3] { 150, 30 ,30};
+                tabla.SetWidths(valores);
+
+                //Creando celdas agregando contenido
+                PdfPCell celda1 = new PdfPCell(new Phrase("Resultado de Dominio", font));
+                celda1.BackgroundColor = new BaseColor(240, 240, 240);
+                celda1.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                tabla.AddCell(celda1);
+
+                PdfPCell celda2 = new PdfPCell(new Phrase("Suma Total", font));
+                celda2.BackgroundColor = new BaseColor(240, 240, 240);
+                celda2.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                tabla.AddCell(celda2);
+
+                PdfPCell celda3 = new PdfPCell(new Phrase("Nivel de Riesgo", font));
+                celda3.BackgroundColor = new BaseColor(240, 240, 240);
+                celda3.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
+                tabla.AddCell(celda3);
+
+
+
+                //Poniendo datos en la la tabla
+                tabla.AddCell(new PdfPCell(new Phrase("Condiciones en el ambiente de trabajo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(CondicionesAmbienteTrabajo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(CondicionesAmbienteTrabajoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Carga de trabajo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(CargaTrabajo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(CargaTrabajoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Falta de control sobre el trabajo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(FaltaControlSobreTrabajo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(FaltaControlSobreTrabajoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Jornada de trabajo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(JornadaTrabajo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(JornadaTrabajoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Interferencia en la relación trabajo-familia", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(InfluenciaTrabajoFueraCentroLaboral.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(InfluenciaTrabajoFueraCentroLaboralRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Liderazgo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(Liderazgo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(LiderazgoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Relaciones en el Trabajo", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(RelacionesTrabajo.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(RelacionesTrabajoRes.ToString(), font)));
+
+                tabla.AddCell(new PdfPCell(new Phrase("Violencia", font)));
+                tabla.AddCell(new PdfPCell(new Phrase(Violencia.ToString(), font)));
+                tabla.AddCell(new PdfPCell(new Phrase(ViolenciaRes.ToString(), font)));
+
+                //Agregando la tabla al documento
+                doc.Add(tabla);
+                
+                doc.Add(espacio);
+                doc.Add(espacio);
+                doc.Add(espacio);
+
+                doc.Add(linea);
+                firma.Alignment = Element.ALIGN_CENTER;
+                doc.Add(firma);
+                doc.Close();
+
+                buffer = ms.ToArray();
+
+            }
+            return File(buffer, "application/pdf");
+
 
         }
 
