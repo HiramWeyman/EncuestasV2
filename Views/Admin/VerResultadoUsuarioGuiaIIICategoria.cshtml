@@ -4,7 +4,16 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
+    <script>
 
+        function VerReporte() {
+
+             window.open('@Url.Action("generarPDFGuiaIIICat", "Pdf", new { id = @ViewBag.id_usuario })');
+
+
+         }
+
+    </script>
 <input type="hidden" id="id_usuario" name="id_usuario" value=@ViewBag.id_usuario />
 <h4><strong>CUESTIONARIO PARA IDENTIFICAR LOS FACTORES DE RIESGO PSICOSOCIAL Y EVALUAR EL ENTORNO ORGANIZACIONAL EN LOS CENTROS DE TRABAJO.</strong></h4>
 <h5><strong>CUESTIONARIO 3.</strong></h5>
@@ -145,6 +154,7 @@
 <div>
     @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
     @Html.ActionLink("Exportar a excel", "generarExcelGuiaIIICat", "Excel", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-success my-2 my-sm-0" })
+    <button onclick="VerReporte()" class="btn btn-danger my-2 my-sm-0">Exportar a PDF</button>
     @Html.ActionLink("CALIFICACION FINAL", "VerResultadoUsuarioGuiaIIIFinal", "Admin", new { id = @ViewBag.id_usuario }, new { @class = "btn btn-primary my-2 my-sm-0" })
 </div>
 
