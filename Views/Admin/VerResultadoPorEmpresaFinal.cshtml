@@ -3,7 +3,16 @@
     ViewBag.Title = "VerResultadoPorEmpresaFinal";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
+<script>
 
+        function VerReporte() {
+
+             window.open('@Url.Action("PDFResultadoPorEmpresaFin", "Pdf",new { ids_usuarios = @ViewBag.ids })');
+
+
+         }
+
+</script>
 <input type="hidden" id="ids_usuarios" name="id_usuario" value=@ViewBag.ids />
 <h5><strong>Resultado de Final por empresa.</strong></h5>
 
@@ -54,6 +63,8 @@
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
         @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaFin", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
+        <button onclick="VerReporte()" class="btn btn-danger my-2 my-sm-0">Exportar a PDF</button>
+
 
     </div>
 }
@@ -104,6 +115,8 @@ else
     <div>
         @Html.ActionLink("Regresar al Menu", "ListarEncuesta", "Admin", new { @class = "btn btn-primary my-2 my-sm-0" })
         @Html.ActionLink("Exportar a excel", "ExcelResultadoPorEmpresaFin", "Excel", new { ids_usuarios = @ViewBag.ids }, new { @class = "btn btn-success my-2 my-sm-0" })
+        <button onclick="VerReporte()" class="btn btn-danger my-2 my-sm-0">Exportar a PDF</button>
+
 
     </div>
 }

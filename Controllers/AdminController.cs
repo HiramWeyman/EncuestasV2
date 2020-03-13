@@ -2824,35 +2824,7 @@ namespace EncuestasV2.Controllers
 
             using (var db = new csstdura_encuestaEntities())
             {
-                //con el primer registro sabemos de donde son los empleados(la empresa)
-                //int id_empresa = db.Database.SqlQuery<int>("select usua_empresa from encuesta_usuarios where usua_id =" + str[0]).FirstOrDefault();
-                /*
-                var InsuficienteSentido = db.encuesta_resultados.SqlQuery(
-                " select count(*) resu_resultado,resu_usua_id,'I.- Acontecimiento traumático severo' as seccion" +
-                " from encuesta_resultados" +
-                " where resu_denc_id in (1, 2, 3, 4, 5, 6)" +
-                " and resu_resultado = 'SI'" +
-                " group by resu_usua_id" +
-                " union" +
-                " select count(*) resu_resultado,resu_usua_id,'II.- Recuerdos persistentes sobre el acontecimiento' as seccion" +
-                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
-                " where resu_denc_id in (7, 8)" +
-                " and resu_resultado = 'SI'" +
-                " group by resu_usua_id" +
-                " union" +
-                " select count(*) resu_resultado,resu_usua_id,'III.- Esfuerzo por evitar circunstancias parecidas o asociadas al acontecimiento' as seccion" +
-                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
-                " where resu_denc_id in (9, 10, 11, 12, 13, 14, 15)" +
-                " and resu_resultado = 'SI'" +
-                " group by resu_usua_id" +
-                " union" +
-                " select count(*) resu_resultado,resu_usua_id,'IV Afectación' as seccion" +
-                " from[csstdura_encuesta].[dbo].[encuesta_resultados]" +
-                " where resu_denc_id in (16, 17, 18, 19, 20)" +
-                " and resu_resultado = 'SI'" +
-                " group by resu_usua_id" +
-                " order by seccion").ToList();
-                */
+           
                 List<int> Acontecimiento = new List<int>() { 1, 2, 3, 4, 5, 6 };
                 List<int> Recuerdos = new List<int>() { 7, 8 };
                 List<int> Esfuerzo = new List<int>() { 9, 10, 11, 12, 13, 14, 15 };

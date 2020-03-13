@@ -3504,7 +3504,7 @@ namespace EncuestasV2.Controllers
                 //Todo el documento excel
                 ExcelPackage ep = new ExcelPackage();
                 //Crear una hoja
-                ep.Workbook.Worksheets.Add("Reporte Excel de Resultados de Categoria por empresa");
+                ep.Workbook.Worksheets.Add("Reporte Excel Atención Médica por Empresa");
                 ExcelWorksheet ew = ep.Workbook.Worksheets[1];
 
                 //Ponemos nombres de las columnas
