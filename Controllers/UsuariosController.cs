@@ -35,8 +35,8 @@ namespace EncuestasV2.Controllers
         List<SelectListItem> listaRotacion;
         List<SelectListItem> listaTiempo;
         List<SelectListItem> listaExpLab;
-        List<SelectListItem> listaDepto;
-        List<SelectListItem> listaCentro;
+       // List<SelectListItem> listaDepto;
+       // List<SelectListItem> listaCentro;
         
 
         private void llenarEmpresa()
@@ -245,37 +245,56 @@ namespace EncuestasV2.Controllers
             }
         }
 
-        private void llenarDepto()
+        public JsonResult llenarDepto(int empresa)
+        {
+            using (var db = new csstdura_encuestaEntities()) {
+
+                List<encuaesta_departamento> listaDepto = db.encuaesta_departamento.Where(x => x.dep_empresa == empresa).ToList();
+                return Json(listaDepto, JsonRequestBehavior.AllowGet);
+            }
+                
+        }
+        //private void llenarDepto()
+        //{
+        //    using (var db = new csstdura_encuestaEntities())
+        //    {
+        //        listaDepto = (from dep in db.encuaesta_departamento
+        //                       select new SelectListItem
+        //                       {
+        //                           Value = dep.dep_id.ToString(),
+        //                           Text = dep.dep_desc,
+        //                           Selected = false
+
+        //                       }).ToList();
+        //        listaDepto.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+        //    }
+        //}
+
+        public JsonResult llenarCentro(int depto)
         {
             using (var db = new csstdura_encuestaEntities())
             {
-                listaDepto = (from dep in db.encuaesta_departamento
-                               select new SelectListItem
-                               {
-                                   Value = dep.dep_id.ToString(),
-                                   Text = dep.dep_desc,
-                                   Selected = false
 
-                               }).ToList();
-                listaDepto.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+                List<encuaesta_centro> listaCentro = db.encuaesta_centro.Where(x => x.centro_depto == depto).ToList();
+                return Json(listaCentro, JsonRequestBehavior.AllowGet);
             }
-        }
 
-        private void llenarCentro()
-        {
-            using (var db = new csstdura_encuestaEntities())
-            {
-                listaCentro = (from centro in db.encuaesta_centro
-                              select new SelectListItem
-                              {
-                                  Value = centro.centro_id.ToString(),
-                                  Text = centro.centro_desc,
-                                  Selected = false
-
-                              }).ToList();
-                listaCentro.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
-            }
         }
+        //private void llenarCentro()
+        //{
+        //    using (var db = new csstdura_encuestaEntities())
+        //    {
+        //        listaCentro = (from centro in db.encuaesta_centro
+        //                      select new SelectListItem
+        //                      {
+        //                          Value = centro.centro_id.ToString(),
+        //                          Text = centro.centro_desc,
+        //                          Selected = false
+
+        //                      }).ToList();
+        //        listaCentro.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+        //    }
+        //}
         public ActionResult Agregar()
         {
             llenarEmpresa();
@@ -291,8 +310,8 @@ namespace EncuestasV2.Controllers
             llenarRotacionTurno();
             llenarTiempoEmp();
             llenarExpLab();
-            llenarDepto();
-            llenarCentro();
+            //llenarDepto();
+           // llenarCentro();
             ViewBag.listaEmpresa = listaEmpresa;
             ViewBag.listaSexo = listaSexo;
             ViewBag.listaEdad = listaEdad;
@@ -306,8 +325,8 @@ namespace EncuestasV2.Controllers
             ViewBag.listaRotacion = listaRotacion;
             ViewBag.listaTiempo = listaTiempo;
             ViewBag.listaExpLab = listaExpLab;
-            ViewBag.listaDepto = listaDepto;
-            ViewBag.listaCentro = listaCentro;
+           // ViewBag.listaDepto = listaDepto;
+           // ViewBag.listaCentro = listaCentro;
             return View();
         }
 
@@ -333,8 +352,8 @@ namespace EncuestasV2.Controllers
                         llenarRotacionTurno();
                         llenarTiempoEmp();
                         llenarExpLab();
-                        llenarDepto();
-                        llenarCentro();
+                        //llenarDepto();
+                       // llenarCentro();
                         ViewBag.listaSexo = listaSexo;
                         ViewBag.listaEdad = listaEdad;
                         ViewBag.listaEdoCivil = listaEdoCivil;
@@ -347,8 +366,8 @@ namespace EncuestasV2.Controllers
                         ViewBag.listaRotacion = listaRotacion;
                         ViewBag.listaTiempo = listaTiempo;
                         ViewBag.listaExpLab = listaExpLab;
-                        ViewBag.listaDepto = listaDepto;
-                        ViewBag.listaCentro = listaCentro;
+                       // ViewBag.listaDepto = listaDepto;
+                       // ViewBag.listaCentro = listaCentro;
                         return View(Oencuesta_usuariosCLS);
                     }
                     //Usando clase de entity framework

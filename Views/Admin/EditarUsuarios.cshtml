@@ -4,6 +4,8 @@
     ViewBag.Title = "EditarUsuarios";
     Layout = "~/Views/Shared/_Layout2.cshtml";
     List<SelectListItem> listaEmp = (List<SelectListItem>)ViewBag.listaEmpresa;
+    List<SelectListItem> listaDep = (List<SelectListItem>)ViewBag.listaDepto;
+    List<SelectListItem> listaCen = (List<SelectListItem>)ViewBag.listaCentro;
     List<SelectListItem> listaSex = (List<SelectListItem>)ViewBag.listaSexo;
     List<SelectListItem> listaEdades = (List<SelectListItem>)ViewBag.listaEdad;
     List<SelectListItem> listaEdoCivil = (List<SelectListItem>)ViewBag.listaEdoCivil;
@@ -17,9 +19,88 @@
     List<SelectListItem> listaTiempo = (List<SelectListItem>)ViewBag.listaTiempo;
     List<SelectListItem> listaExpLab = (List<SelectListItem>)ViewBag.listaExpLab;
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<h2>Editar Usuarios</h2>
-<div class="row">
+<script>
+
+    $(document).ready(function () {
+
+        $("#empresa").click(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $( "#departamento" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+           });
+
+        $("#empresa").change(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $( "#departamento" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+        });
+
+         $("#empresa").focus(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $( "#departamento" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+           });
+
+        $("#departamento").change(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                  $( "#centro" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").focus(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                 $( "#centro" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").blur(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                 $( "#centro" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+      $("#departamento").click(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                 $( "#centro" ).prop( "disabled", false );
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+    });
+</script>
+
+<div class=" container m-5">
+    <h2>Editar Usuarios</h2>
+    <hr />
     <div class="col-md-6">
         @using (Html.BeginForm("EditarUsuarios", "Admin", FormMethod.Post))
         {
@@ -34,10 +115,21 @@
 
             <div>
                 @Html.LabelFor(model => model.usua_empresa)
-                @Html.DropDownListFor(model => model.usua_empresa, listaEmp, null, new { @class = "form-control", })
+                @Html.DropDownListFor(model => model.usua_empresa, listaEmp, null, new { @class = "form-control", @id = "empresa" })
                 @Html.ValidationMessageFor(model => model.usua_empresa, "", new { @class = "text-danger" })
             </div>
 
+            <div>
+                @Html.LabelFor(model => model.usua_departamento)
+                @Html.DropDownListFor(model => model.usua_departamento, listaDep, null, new { @class = "form-control", @id = "departamento", @disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.usua_departamento, "", new { @class = "text-danger" })
+            </div>
+
+            <div>
+                @Html.LabelFor(model => model.usua_centro_trabajo)
+                @Html.DropDownListFor(model => model.usua_centro_trabajo, listaCen, new { @class = "form-control", @id = "centro", @disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.usua_centro_trabajo, "", new { @class = "text-danger" })
+            </div>
 
             <div>
                 @Html.LabelFor(model => model.usua_n_usuario)
@@ -50,7 +142,7 @@
             <div>
                 @Html.LabelFor(model => model.usua_p_usuario)
 
-                @Html.EditorFor(model => model.usua_p_usuario, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", type = "password",required="required" } })
+                @Html.EditorFor(model => model.usua_p_usuario, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", type = "password", required = "required" } })
                 @Html.ValidationMessageFor(model => model.usua_p_usuario, "", new { @class = "text-danger" })
 
             </div>
@@ -199,9 +291,12 @@
             </div>
             <br />
             <div>
-                <div class="col-md-offset-2 col-md-10">
+                <div class="col-md-offset-2 col-md-11">
                     <input type="submit" value="Actualizar Usuario" class="btn btn-primary" />
+                    @Html.ActionLink("Regresar a Menu", "Empleados", "Admin", new { @class = "btn btn-primary my-2 my-sm-0 " })
+
                 </div>
+
             </div>
 
         }
@@ -209,6 +304,4 @@
 
 
 </div>
-<div>
-    @Html.ActionLink("Regresar al Menu", "Empleados", new { @class = "btn btn-primary my-2 my-sm-0" })
-</div>
+

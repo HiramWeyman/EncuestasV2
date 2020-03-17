@@ -26,6 +26,8 @@ namespace EncuestasV2.Controllers
     {
 
         List<SelectListItem> listaEmpresa;
+        List<SelectListItem> listaDepto;
+        List<SelectListItem> listaCentro;
         List<SelectListItem> listaSexo;
         List<SelectListItem> listaEdad;
         List<SelectListItem> listaEdoCivil;
@@ -232,6 +234,38 @@ namespace EncuestasV2.Controllers
             }
         }
 
+        private void llenarDepto()
+        {
+            using (var db = new csstdura_encuestaEntities())
+            {
+                listaDepto = (from dep in db.encuaesta_departamento
+                              select new SelectListItem
+                              {
+                                  Value = dep.dep_id.ToString(),
+                                  Text = dep.dep_desc,
+                                  Selected = false
+
+                              }).ToList();
+                listaDepto.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+            }
+        }
+
+
+        private void llenarCentro()
+        {
+            using (var db = new csstdura_encuestaEntities())
+            {
+                listaCentro = (from centro in db.encuaesta_centro
+                               select new SelectListItem
+                               {
+                                   Value = centro.centro_id.ToString(),
+                                   Text = centro.centro_desc,
+                                   Selected = false
+
+                               }).ToList();
+                listaCentro.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+            }
+        }
         private void llenarExpLab()
         {
             using (var db = new csstdura_encuestaEntities())
@@ -252,6 +286,8 @@ namespace EncuestasV2.Controllers
         {
 
             llenarEmpresa();
+            llenarDepto();
+            llenarCentro();
             llenarSexo();
             llenarEdad();
             llenarEdoCivil();
@@ -884,6 +920,8 @@ namespace EncuestasV2.Controllers
                     string contraCifrada = BitConverter.ToString(byteContraCifrado).Replace("-", "");
                     usuarios.usua_p_usuario = contraCifrada;
 
+                    int periodo = db.Database.SqlQuery<int>("Select periodo_id from encuaesta_periodo where periodo_estatus='A'")
+                      .FirstOrDefault();
                     //usuarios.usua_p_usuario = Oencuesta_usuariosCLS.usua_p_usuario;
                     usuarios.usua_u_alta = "";
                     usuarios.usua_f_alta = DateTime.Now;
@@ -908,13 +946,16 @@ namespace EncuestasV2.Controllers
                     usuarios.usua_tiempo_puesto = Oencuesta_usuariosCLS.usua_tiempo_puesto;
                     usuarios.usua_exp_laboral = Oencuesta_usuariosCLS.usua_exp_laboral;
                     usuarios.usua_presento = "N";
+                    usuarios.usua_departamento = Oencuesta_usuariosCLS.usua_departamento;
+                    usuarios.usua_centro_trabajo = Oencuesta_usuariosCLS.usua_centro_trabajo;
+                    usuarios.usua_periodo = periodo;
                     db.encuesta_usuarios.Add(usuarios);
                     int res = db.SaveChanges();
                     transaction.Complete();
                     if (res == 1)
                     {
 
-                        return Content("<script language='javascript' type='text/javascript'>alert('Registro exitoso!');window.location = '/Login/Index';</script>");
+                        return Content("<script language='javascript' type='text/javascript'>alert('Registro exitoso!');window.location = '/Admin/Empleados';</script>");
 
                     }
                     else
@@ -938,6 +979,8 @@ namespace EncuestasV2.Controllers
         {
             listarCombos();
             ViewBag.listaEmpresa = listaEmpresa;
+            ViewBag.listaDepto = listaDepto;
+            ViewBag.listaCentro = listaCentro;
             ViewBag.listaSexo = listaSexo;
             ViewBag.listaEdad = listaEdad;
             ViewBag.listaEdoCivil = listaEdoCivil;
@@ -963,6 +1006,8 @@ namespace EncuestasV2.Controllers
                 Oencuesta_usuarioCLS.usua_id = oUsuarios.usua_id;
                 Oencuesta_usuarioCLS.usua_nombre = oUsuarios.usua_nombre;
                 Oencuesta_usuarioCLS.usua_empresa = (int)oUsuarios.usua_empresa;
+                Oencuesta_usuarioCLS.usua_departamento = (int)oUsuarios.usua_departamento;
+                Oencuesta_usuarioCLS.usua_centro_trabajo = (int)oUsuarios.usua_centro_trabajo;
                 //Oencuesta_usuarioCLS.usua_tipo = oUsuarios.usua_tipo;
                 Oencuesta_usuarioCLS.usua_n_usuario = oUsuarios.usua_n_usuario;
                 Oencuesta_usuarioCLS.usua_genero = (int)oUsuarios.usua_genero;
@@ -1003,6 +1048,8 @@ namespace EncuestasV2.Controllers
 
                 Oencuesta_usuario.usua_nombre = Oencuesta_usuariosCLS.usua_nombre;
                 Oencuesta_usuario.usua_empresa = Oencuesta_usuariosCLS.usua_empresa;
+                Oencuesta_usuario.usua_departamento = Oencuesta_usuariosCLS.usua_departamento;
+                Oencuesta_usuario.usua_centro_trabajo = Oencuesta_usuariosCLS.usua_centro_trabajo;
                 Oencuesta_usuario.usua_n_usuario = Oencuesta_usuariosCLS.usua_n_usuario;
 
                 //Cifrando el password

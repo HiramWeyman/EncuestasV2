@@ -18,9 +18,53 @@
     List<SelectListItem> listaTiempo = (List<SelectListItem>)ViewBag.listaTiempo;
     List<SelectListItem> listaExpLab = (List<SelectListItem>)ViewBag.listaExpLab;
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<h2>Agregar Usuarios</h2>
-<div class="row">
+<script>
+
+    $(document).ready(function () {
+        $("#empresa").change(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").change(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").focus(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").blur(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+    });
+</script>
+
+<div class=" container m-5">
+    <h2>Agregar Usuarios</h2>
+    <hr />
     <div class="col-md-6">
         @using (Html.BeginForm("InsertaUsuario", "Admin", FormMethod.Post))
         {
@@ -34,10 +78,20 @@
 
             <div>
                 @Html.LabelFor(model => model.usua_empresa)
-                @Html.DropDownListFor(model => model.usua_empresa, listaEmp, null, new { @class = "form-control", required = "required" })
+                @Html.DropDownListFor(model => model.usua_empresa, listaEmp, null, new { @class = "form-control", @id = "empresa", required = "required" })
                 @Html.ValidationMessageFor(model => model.usua_empresa, "", new { @class = "text-danger" })
             </div>
+            <div>
+                @Html.LabelFor(model => model.usua_departamento)
+                @Html.DropDownListFor(model => model.usua_departamento, new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "departamento" })
+                @Html.ValidationMessageFor(model => model.usua_departamento, "", new { @class = "text-danger" })
+            </div>
 
+            <div>
+                @Html.LabelFor(model => model.usua_centro_trabajo)
+                @Html.DropDownListFor(model => model.usua_centro_trabajo, new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "centro" })
+                @Html.ValidationMessageFor(model => model.usua_centro_trabajo, "", new { @class = "text-danger" })
+            </div>
 
             <div>
                 @Html.LabelFor(model => model.usua_n_usuario)
@@ -204,7 +258,7 @@
                     @Html.ActionLink("Regresar a Menu", "Empleados", "Admin", new { @class = "btn btn-primary my-2 my-sm-0 " })
 
                 </div>
-             
+
             </div>
 
         }
