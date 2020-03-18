@@ -1,0 +1,105 @@
+﻿@model IEnumerable<EncuestasV2.Models.encuaesta_periodo>
+
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        html {
+            font-family: verdana;
+            font-size: 10pt;
+            line-height: 25px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: scroll;
+            display: block;
+        }
+
+        thead {
+            background-color: #EFEFEF;
+        }
+
+        thead,
+        tbody {
+            display: block;
+        }
+
+        tbody {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 300px;
+        }
+
+        td,
+        th {
+            min-width: 300px;
+            height: 25px;
+            border: dashed 1px lightblue;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+    </style>
+
+    <script>
+        $('table').on('scroll', function () {
+            $("table > *").width($("table").width() + $("table").scrollLeft());
+        });
+    </script>
+</head>
+
+<body>
+    <h2>Catalogo de Periodos</h2>
+
+    <hr />
+    <div style="height:500px;margin-left:10px;">
+
+        <p>
+            @Html.ActionLink("Agregar Nuevo Registro", "Create", "encuaesta_periodo", new { @class = "btn btn-primary my-2 my-sm-0 " })
+            <a href="@Url.Action("Index", "Admin")" class="btn btn-primary my-2 my-sm-0"><b> Regresar al Menu</b></a>
+
+        </p>
+        <table class="table">
+            <tr>
+                <th>
+                    <label>Descripción</label>
+                    @*@Html.DisplayNameFor(model => model.periodo_desc)*@
+                </th>
+                <th>
+                    <label>Estatus</label>
+                    @*@Html.DisplayNameFor(model => model.periodo_estatus)*@
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.periodo_desc)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.periodo_estatus)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.periodo_id }) |
+                        @Html.ActionLink("Detalle", "Details", new { id = item.periodo_id }) |
+                        @Html.ActionLink("Borrar", "Delete", new { id = item.periodo_id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+
+</body>
+</html>

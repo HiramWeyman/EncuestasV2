@@ -22,6 +22,11 @@ namespace EncuestasV2.Controllers
         {
             return View();
         }
+
+        public ActionResult Panel()
+        {
+            return View();
+        }
         List<SelectListItem> listaEmpresa;
         List<SelectListItem> listaSexo;
         List<SelectListItem> listaEdad;

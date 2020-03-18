@@ -35,7 +35,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.centro_desc, htmlAttributes: new { @class = "control-label col-md-3" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.centro_desc, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.centro_desc, new { htmlAttributes = new { @class = "form-control",@required = "required" } })
                 @Html.ValidationMessageFor(model => model.centro_desc, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -43,7 +43,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.centro_empresa_desc, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.centro_empresa, listaEmp, new { @class = "form-control", required = "required", @id = "empresa" })
+                @Html.DropDownListFor(model => model.centro_empresa, listaEmp, new { @class = "form-control",@required = "required", @id = "empresa" })
                 @Html.ValidationMessageFor(model => model.centro_empresa, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -51,7 +51,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.centro_depto_desc, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.centro_depto, new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "departamento" })
+                @Html.DropDownListFor(model => model.centro_depto, new SelectList(""), "--Seleccione--", new { @class = "form-control",@required = "required", @id = "departamento" })
                 @Html.ValidationMessageFor(model => model.centro_depto, "", new { @class = "text-danger" })
             </div>
         </div>

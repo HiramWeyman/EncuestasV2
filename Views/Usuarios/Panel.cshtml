@@ -87,10 +87,10 @@
             }
 
             @*@if (Model != null && Model.mensajeError != null)
-        {
-            @Html.Label(Model.mensajeError, new { @class = "text-danger" })
+                {
+                    @Html.Label(Model.mensajeError, new { @class = "text-danger" })
 
-        }*@
+                }*@
         </div>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -104,8 +104,8 @@
 
         if (rpta == "1") {
             var porId=document.getElementById("nombre").value;
-         
-            var url = '@Html.Raw(Url.Action("ListarEncuesta", "Admin"))';
+
+            var url = '@Html.Raw(Url.Action("Index", "Admin"))';
             window.location.href = url;
 
 
@@ -115,5 +115,3 @@
         }
     }
 </script>
-
-

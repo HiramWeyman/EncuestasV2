@@ -1,0 +1,96 @@
+﻿@model EncuestasV2.Models.encuaesta_periodo
+
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+        html {
+            font-family: verdana;
+            font-size: 10pt;
+            line-height: 25px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: scroll;
+            display: block;
+        }
+
+        thead {
+            background-color: #EFEFEF;
+        }
+
+        thead,
+        tbody {
+            display: block;
+        }
+
+        tbody {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 300px;
+        }
+
+        td,
+        th {
+            min-width: 300px;
+            height: 25px;
+            border: dashed 1px lightblue;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Eliminar Periodo</h2>
+
+    <h3>Esta seguro de eliminar este periodo?</h3>
+    <div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Eliminar periodo" class="btn btn-default" /> |
+                @Html.ActionLink("Lista de periodos", "Index", "encuaesta_periodo", new { @class = "btn btn-primary my-2 my-sm-0 " })
+            </div>
+        }
+        <hr />
+        <div style="height:500px;margin-left:10px;">
+            <dl class="dl-horizontal">
+                <dt>
+                    <label>Descripción</label>
+                    @*@Html.DisplayNameFor(model => model.periodo_desc)*@
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.periodo_desc)
+                </dd>
+
+                <dt>
+                    <label>Estatus</label>
+                    @*@Html.DisplayNameFor(model => model.periodo_estatus)*@
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.periodo_estatus)
+                </dd>
+
+            </dl>
+        </div>
+
+          
+
+
+        </div>
+</body>
+</html>

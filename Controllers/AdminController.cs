@@ -2955,7 +2955,7 @@ namespace EncuestasV2.Controllers
                                         resu_resultado = grp.Count(),
                                         usua_nombre = grp.Key.usua_nombre,
                                         resu_seccion_id = 4,
-                                        resu_seccion = "IV Afectación"
+                                        resu_seccion = "IV.- Afectación"
                                     }).Distinct().ToList();
 
             }
