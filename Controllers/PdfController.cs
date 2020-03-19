@@ -397,7 +397,7 @@ namespace EncuestasV2.Controllers
                     else
                     {
 
-                        Chunk chunk = new Chunk("El Trabajador no requiere valoración clínica ", font1);
+                        Chunk chunk = new Chunk("El trabajador no requiere valoración clínica ", font1);
                         chunk.SetBackground(BaseColor.YELLOW);
                         Paragraph p = new Paragraph(chunk);
                         p.Alignment = Element.ALIGN_LEFT;

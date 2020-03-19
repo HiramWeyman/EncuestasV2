@@ -5,6 +5,8 @@
     ViewBag.Title = "Empleados";
     Layout = "~/Views/Shared/_Layout2.cshtml";
     List<SelectListItem> listaEmp = (List<SelectListItem>)ViewBag.listaEmpresa;
+    List<SelectListItem> listaDep = (List<SelectListItem>)ViewBag.listaDepto2;
+    List<SelectListItem> listaCen = (List<SelectListItem>)ViewBag.listaCentro2;
     List<SelectListItem> listaSex = (List<SelectListItem>)ViewBag.listaSexo;
     List<SelectListItem> listaEdades = (List<SelectListItem>)ViewBag.listaEdad;
     List<SelectListItem> listaEdoCivil = (List<SelectListItem>)ViewBag.listaEdoCivil;
@@ -20,50 +22,47 @@
 }
 
 <style>
-html {
-  font-family: verdana;
-  font-size: 10pt;
-  line-height: 25px;
-}
+    html {
+        font-family: verdana;
+        font-size: 10pt;
+        line-height: 25px;
+    }
 
-table {
-  border-collapse: collapse;
-  width: 1700px;
-  overflow-x: scroll;
-  display: block;
-}
+    table {
+        border-collapse: collapse;
+        width: 1800px;
+        overflow-x: scroll;
+        display: block;
+    }
 
-thead {
-  background-color: #EFEFEF;
-}
+    thead {
+        background-color: #EFEFEF;
+    }
 
-thead,
-tbody {
-  display: block;
-}
+    thead,
+    tbody {
+        display: block;
+    }
 
-tbody {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 300px;
-}
+    tbody {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        height: 300px;
+    }
 
-td,
-th {
-  min-width: 100px;
-  height: 25px;
-  border: dashed 1px lightblue;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100px;
-}
+    td,
+    th {
+        min-width: 100px;
+        height: 25px;
+        border: dashed 1px lightblue;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+    }
 </style>
 
-<script>
-$('table').on('scroll', function() {
-  $("table > *").width($("table").width() + $("table").scrollLeft());
-});
-</script>
+
+
 <div style="height:500px;overflow:auto;margin-left:10px;">
     <br />
     <h2>Administrador</h2>
@@ -81,6 +80,8 @@ $('table').on('scroll', function() {
             <thead>
                 <tr>
                     <th><label>Empresa:</label></th>
+                    <th><label>Departamento:</label></th>
+                    <th><label>Centro de Trabajo:</label></th>
                     <th><label>Género:</label></th>
                     <th><label>Edad:</label></th>
                     <th><label>Estado Civil:</label></th>
@@ -95,7 +96,29 @@ $('table').on('scroll', function() {
             <tbody style="height:40px;">
                 <tr>
                     <td>
-                        @Html.DropDownList("usua_empresa", listaEmp, new { @class = "form-control" })
+                            @Html.DropDownList("usua_empresa", listaEmp, new { @class = "form-control", @id = "empresa", })
+                    </td>
+                    <td>
+                        @if (listaDep!=null)
+                        {
+                            @Html.DropDownList("usua_departamento", listaDep, new { @class = "form-control", @id = "departamento", })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("usua_departamento", new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "departamento" })
+                        }
+
+                    </td>
+                    <td>
+                        @if (listaCen != null)
+                        {
+                            @Html.DropDownList("usua_centro_trabajo", listaCen, new { @class = "form-control", @id = "centro", })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("usua_centro_trabajo", new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "centro" })
+                        }
+
                     </td>
                     <td>
                         @Html.DropDownList("usua_genero", listaSex, new { @class = "form-control" })
@@ -138,6 +161,8 @@ $('table').on('scroll', function() {
                 <th><label>Id</label></th>
                 <th><label>Nombre</label></th>
                 <th><label>Empresa</label></th>
+                <th><label>Departamento</label></th>
+                <th><label>Centro Trabajo</label></th>
                 <th><label>Estatus</label></th>
                 <th><label>Usuario</label></th>
                 <th><label>Genero</label></th>
@@ -158,37 +183,39 @@ $('table').on('scroll', function() {
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        <a href="@Url.Action("EditarUsuarios", "Admin",new { id = item.usua_id })" class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                        <a href="@Url.Action("EliminarUsuarios", "Admin",new { id = item.usua_id })" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+            <tr>
+                <td>
+                    <a href="@Url.Action("EditarUsuarios", "Admin",new { id = item.usua_id })" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                    <a href="@Url.Action("EliminarUsuarios", "Admin",new { id = item.usua_id })" class="btn btn-danger"><i class="fas fa-trash"></i></a>
 
-                    </td>
-                    <td><b>@item.usua_id</b></td>
-                    <td><b>@item.usua_nombre</b></td>
-                    <td><b>@item.empleado_empresa</b></td>
-                    <td><b>@item.usua_estatus</b></td>
-                    <td><b>@item.usua_n_usuario</b></td>
-                    <td><b>@item.empleado_genero</b></td>
-                    <td><b>@item.empleado_edad</b></td>
-                    <td><b>@item.empleado_edocivil</b></td>
-                    <td><b>@item.empleado_tipopuesto</b></td>
-                    <td><b>@item.empleado_tipocontata</b></td>
-                    <td><b>@item.empleado_tipopersonal</b></td>
-                    <td><b>@item.empleado_tipojornada</b></td>
-                    <td><b>@item.empleado_rotacion</b></td>
-                    <td><b>@item.empleado_tiempopuesto</b></td>
-                    <td><b>@item.empleado_explab</b></td>
-                    <td><b>@item.usua_presento</b></td>
+                </td>
+                <td><b>@item.usua_id</b></td>
+                <td><b>@item.usua_nombre</b></td>
+                <td><b>@item.empleado_empresa</b></td>
+                <td><b>@item.empleado_dep</b></td>
+                <td><b>@item.empleado_cen</b></td>
+                <td><b>@item.usua_estatus</b></td>
+                <td><b>@item.usua_n_usuario</b></td>
+                <td><b>@item.empleado_genero</b></td>
+                <td><b>@item.empleado_edad</b></td>
+                <td><b>@item.empleado_edocivil</b></td>
+                <td><b>@item.empleado_tipopuesto</b></td>
+                <td><b>@item.empleado_tipocontata</b></td>
+                <td><b>@item.empleado_tipopersonal</b></td>
+                <td><b>@item.empleado_tipojornada</b></td>
+                <td><b>@item.empleado_rotacion</b></td>
+                <td><b>@item.empleado_tiempopuesto</b></td>
+                <td><b>@item.empleado_explab</b></td>
+                <td><b>@item.usua_presento</b></td>
 
-                </tr>
+            </tr>
             }
         </tbody>
     </table>
 
 
 </div>
- encuesta_usuariosCLS
+
 
 <script>
 
@@ -197,10 +224,74 @@ $('table').on('scroll', function() {
     var controles = document.getElementsByClassName("form-control");
     var ncontoles = controles.length;
     for (var i = 0; i < ncontoles; i++) {
+
         controles[i].onchange = function () {
             frmFiltrado.submit();
         }
 
     }
 
+</script>
+@*<script>
+
+    $(document).ready(function () {
+        $("#empresa").change(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+        });
+
+        $("#empresa").focus(function () {
+            $.get("/Usuarios/llenarDepto", { empresa: $("#empresa").val() }, function (data) {
+                $("#departamento").empty();
+                $.each(data, function (index, row) {
+                    $("#departamento").append("<option value='" + row.dep_id + "'>" + row.dep_desc + "</option>")
+                });
+            });
+        });
+         
+        $("#departamento").change(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+            $("#departamento").focus(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+
+        $("#departamento").blur(function () {
+            $.get("/Usuarios/llenarCentro", { depto: $("#departamento").val() }, function (data) {
+                $("#centro").empty();
+                $.each(data, function (index, row) {
+                    $("#centro").append("<option value='" + row.centro_id + "'>" + row.centro_desc + "</option>")
+                });
+            });
+        });
+        $("#centro").change(function () {
+        
+             $( "#frmFiltrado" ).submit();
+        });
+        $("#centro").blur(function () {
+        
+             $( "#frmFiltrado" ).submit();
+        });
+    
+       
+    });
+</script>*@
+<script>
+    $('table').on('scroll', function () {
+        $("table > *").width($("table").width() + $("table").scrollLeft());
+    });
 </script>

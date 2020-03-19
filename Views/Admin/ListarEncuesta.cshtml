@@ -4,9 +4,20 @@
     ViewBag.Title = "ListarEncuesta";
     Layout = "~/Views/Shared/_Layout2.cshtml";
     List<SelectListItem> listaEmp = (List<SelectListItem>)ViewBag.listaEmpresa;
+    List<SelectListItem> listaDep = (List<SelectListItem>)ViewBag.listaDepto2;
+    List<SelectListItem> listaCen = (List<SelectListItem>)ViewBag.listaCentro2;
     List<SelectListItem> listaSex = (List<SelectListItem>)ViewBag.listaSexo;
     List<SelectListItem> listaEdades = (List<SelectListItem>)ViewBag.listaEdad;
     List<SelectListItem> listaEdoCivil = (List<SelectListItem>)ViewBag.listaEdoCivil;
+    List<SelectListItem> listaOpciones = (List<SelectListItem>)ViewBag.listaOpciones;
+    List<SelectListItem> listaProceso = (List<SelectListItem>)ViewBag.listaProceso;
+    List<SelectListItem> listaPuesto = (List<SelectListItem>)ViewBag.listaPuesto;
+    List<SelectListItem> listaContrata = (List<SelectListItem>)ViewBag.listaContrata;
+    List<SelectListItem> listaPersonal = (List<SelectListItem>)ViewBag.listaPersonal;
+    List<SelectListItem> listaJornada = (List<SelectListItem>)ViewBag.listaJornada;
+    List<SelectListItem> listaRotacion = (List<SelectListItem>)ViewBag.listaRotacion;
+    List<SelectListItem> listaTiempo = (List<SelectListItem>)ViewBag.listaTiempo;
+    List<SelectListItem> listaExpLab = (List<SelectListItem>)ViewBag.listaExpLab;
     String ids = "";
     int bandera = 0;
 }
@@ -28,15 +39,45 @@
                 <thead>
                     <tr>
                         <th><label>Empresa:</label></th>
-                        <th><label>Genero:</label></th>
+                        <th><label>Departamento:</label></th>
+                        <th><label>Centro de Trabajo:</label></th>
+                        <th><label>Género:</label></th>
                         <th><label>Edad:</label></th>
-                        <th><label>Estado civil:</label></th>
+                        <th><label>Estado Civil:</label></th>
+                        <th><label>Puesto:</label></th>
+                        <th><label>Contratación:</label></th>
+                        <th><label>Personal:</label></th>
+                        @*<th><label>Jornada:</label></th>
+                        <th><label>Tempo en puesto:</label></th>
+                        <th><label>Exp Laboral:</label></th>*@
                     </tr>
                 </thead>
                 <tbody style="height:40px;">
                     <tr>
                         <td>
-                            @Html.DropDownList("usua_empresa", listaEmp, new { @class = "form-control", @onchange = "alert(this.value);" })
+                            @Html.DropDownList("usua_empresa", listaEmp, new { @class = "form-control", @id = "empresa", })
+                        </td>
+                        <td>
+                            @if (listaDep != null)
+                            {
+                                @Html.DropDownList("usua_departamento", listaDep, new { @class = "form-control", @id = "departamento", })
+                            }
+                            else
+                            {
+                                @Html.DropDownList("usua_departamento", new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "departamento" })
+                            }
+
+                        </td>
+                        <td>
+                            @if (listaCen != null)
+                            {
+                                @Html.DropDownList("usua_centro_trabajo", listaCen, new { @class = "form-control", @id = "centro", })
+                            }
+                            else
+                            {
+                                @Html.DropDownList("usua_centro_trabajo", new SelectList(""), "--Seleccione--", new { @class = "form-control", @id = "centro" })
+                            }
+
                         </td>
                         <td>
                             @Html.DropDownList("usua_genero", listaSex, new { @class = "form-control" })
@@ -47,6 +88,24 @@
                         <td>
                             @Html.DropDownList("usua_edo_civil", listaEdoCivil, new { @class = "form-control" })
                         </td>
+                        <td>
+                            @Html.DropDownList("usua_tipo_puesto", listaPuesto, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.DropDownList("usua_tipo_contratacion", listaContrata, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.DropDownList("usua_tipo_personal", listaPersonal, new { @class = "form-control" })
+                        </td>
+                        @*<td>
+                            @Html.DropDownList("usua_tipo_jornada", listaJornada, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.DropDownList("usua_tiempo_puesto", listaTiempo, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            @Html.DropDownList("usua_exp_laboral", listaExpLab, new { @class = "form-control" })
+                        </td>*@
                     </tr>
                 </tbody>
             </table>
@@ -60,9 +119,14 @@
                         <th><label>Id</label></th>
                         <th><label>Nombre</label></th>
                         <th><label>Empresa</label></th>
+                        <th><label>Departamento</label></th>
+                        <th><label>Centro Trabajo</label></th>
                         <th><label>Género</label></th>
                         <th><label>Edad</label></th>
                         <th><label>Estado Civil</label></th>
+                        <th><label>Tipo Puesto</label></th>
+                        <th><label>Contratación</label></th>
+                        <th><label>Tipo personal</label></th>
                         <th><label>Estatus</label></th>
                         <th><label>Usuario</label></th>
                     </tr>
@@ -71,19 +135,24 @@
                     @foreach (var item in Model)
                     {
                         ids += @item.usua_id + ",";
-                        <tr>
-                            <td>@item.usua_id <input type="hidden" id="id_usuario" name="id_usuario" value="@item.usua_id" /></td>
-                            <td>@item.usua_nombre</td>
-                            <td>@item.empleado_empresa</td>
-                            <td>@item.empleado_genero</td>
-                            <td>@item.empleado_edad</td>
-                            <td>@item.empleado_edocivil</td>
-                            <td>@item.usua_estatus</td>
-                            <td>@item.usua_n_usuario</td>
-                            <td style="display: inline-table;">
-                                @Html.ActionLink("Ver Resultado", "VerResultadoUsuario", "Admin", new { id = item.usua_id }, new { @class = "btn btn-primary my-2 my-sm-0" })
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>@item.usua_id <input type="hidden" id="id_usuario" name="id_usuario" value="@item.usua_id" /></td>
+                        <td>@item.usua_nombre</td>
+                        <td>@item.empleado_empresa</td>
+                        <td>@item.empleado_dep</td>
+                        <td>@item.empleado_cen</td>
+                        <td>@item.empleado_genero</td>
+                        <td>@item.empleado_edad</td>
+                        <td>@item.empleado_edocivil</td>
+                        <td>@item.empleado_tipopuesto</td>
+                        <td>@item.empleado_tipocontata</td>
+                        <td>@item.empleado_tipopersonal</td>
+                        <td>@item.usua_estatus</td>
+                        <td>@item.usua_n_usuario</td>
+                        <td style="display: inline-table;">
+                            @Html.ActionLink("Ver Resultado", "VerResultadoUsuario", "Admin", new { id = item.usua_id }, new { @class = "btn btn-primary my-2 my-sm-0" })
+                        </td>
+                    </tr>
                     }
 
                 </tbody>

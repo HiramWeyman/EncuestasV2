@@ -27,7 +27,9 @@ namespace EncuestasV2.Controllers
 
         List<SelectListItem> listaEmpresa;
         List<SelectListItem> listaDepto;
+        List<SelectListItem> listaDepto2;
         List<SelectListItem> listaCentro;
+        List<SelectListItem> listaCentro2;
         List<SelectListItem> listaSexo;
         List<SelectListItem> listaEdad;
         List<SelectListItem> listaEdoCivil;
@@ -249,7 +251,23 @@ namespace EncuestasV2.Controllers
                 listaDepto.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
             }
         }
+        private void llenarDepto2(int empresa)
+        {
+        
+            using (var db = new csstdura_encuestaEntities())
+            {
+                listaDepto2 = (from dep in db.encuaesta_departamento where dep.dep_empresa==empresa
+                              select new SelectListItem
+                              {
+                                  Value = dep.dep_id.ToString(),
+                                  Text = dep.dep_desc,
+                                  Selected = false
 
+                              }).ToList();
+                listaDepto2.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+            }
+        }
+        //List<encuaesta_departamento> listaDepto = db.encuaesta_departamento.Where(x => x.dep_empresa == empresa).ToList();
 
         private void llenarCentro()
         {
@@ -264,6 +282,22 @@ namespace EncuestasV2.Controllers
 
                                }).ToList();
                 listaCentro.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
+            }
+        }
+
+        private void llenarCentro2(int dep)
+        {
+            using (var db = new csstdura_encuestaEntities())
+            {
+                listaCentro2 = (from centro in db.encuaesta_centro where centro.centro_depto==dep
+                               select new SelectListItem
+                               {
+                                   Value = centro.centro_id.ToString(),
+                                   Text = centro.centro_desc,
+                                   Selected = false
+
+                               }).ToList();
+                listaCentro2.Insert(0, new SelectListItem { Text = "Seleccione", Value = "" });
             }
         }
         private void llenarExpLab()
@@ -321,7 +355,16 @@ namespace EncuestasV2.Controllers
             int id_expLab = empleados_.usua_exp_laboral;
 
             listarCombos();
+            if (empleados_.usua_empresa >0) {
+                llenarDepto2(empleados_.usua_empresa);
+            }
+            if (empleados_.usua_departamento > 0)
+            {
+                llenarCentro2(empleados_.usua_departamento);
+            }
 
+            ViewBag.listadepto2 = listaDepto2;
+            ViewBag.listacentro2 = listaCentro2;
             ViewBag.listaEmpresa = listaEmpresa;
             ViewBag.listaSexo = listaSexo;
             ViewBag.listaEdad = listaEdad;
@@ -379,6 +422,10 @@ namespace EncuestasV2.Controllers
                                  on empleado.usua_tiempo_puesto equals tiempo.tiempopue_id
                                  join exp in db.encuesta_explab
                                  on empleado.usua_exp_laboral equals exp.explab_id
+                                 join dep in db.encuaesta_departamento
+                                 on empleado.usua_departamento equals dep.dep_id
+                                 join cen in db.encuaesta_centro
+                                 on empleado.usua_centro_trabajo equals cen.centro_id
                                  select new encuesta_usuariosCLS
                                  {
                                      usua_id = empleado.usua_id,
@@ -393,7 +440,15 @@ namespace EncuestasV2.Controllers
                                      usua_genero = (int)empleado.usua_genero,
                                      usua_edad = (int)empleado.usua_edad,
                                      usua_edo_civil = (int)empleado.usua_edo_civil,
+                                     usua_tipo_puesto = (int)empleado.usua_tipo_puesto,
+                                     usua_tipo_contratacion = (int)empleado.usua_tipo_contratacion,
+                                     usua_tipo_personal=(int)empleado.usua_tipo_personal,
+                                     usua_tipo_jornada=(int)empleado.usua_tipo_jornada,
+                                     usua_tiempo_puesto=(int)empleado.usua_tiempo_puesto,
+                                     usua_exp_laboral=(int)empleado.usua_exp_laboral,
                                      usua_presento = empleado.usua_presento,
+                                     usua_departamento=(int)empleado.usua_departamento,
+                                     usua_centro_trabajo=(int)empleado.usua_centro_trabajo,
                                      empleado_empresa = empresa.emp_descrip,
                                      empleado_genero = genero.sexo_desc,
                                      empleado_edad = edad_emp.edad_desc,
@@ -412,13 +467,23 @@ namespace EncuestasV2.Controllers
                                      empleado_tipojornada = tipojornada.tipojornada_desc,
                                      empleado_rotacion = rota.rotacionturno_desc,
                                      empleado_tiempopuesto = tiempo.tiempopue_desc,
-                                     empleado_explab = exp.explab_desc
+                                     empleado_explab = exp.explab_desc,
+                                     empleado_dep=dep.dep_desc,
+                                     empleado_cen=cen.centro_desc
 
                                  }).ToList();
                 Session["ListaUser"] = listaEmpleado;
-                if (empleados_.usua_id == 0 && empleados_.usua_empresa == 0 && empleados_.usua_genero == 0 && empleados_.usua_edad == 0 && empleados_.usua_edo_civil == 0
-                    && empleados_.usua_tipo_puesto == 0 && empleados_.usua_tipo_contratacion == 0 && empleados_.usua_tipo_personal == 0
-                    && empleados_.usua_tipo_jornada == 0 && empleados_.usua_tiempo_puesto == 0 && empleados_.usua_exp_laboral == 0)
+                if (empleados_.usua_id == 0 && 
+                    empleados_.usua_empresa == 0 && 
+                    empleados_.usua_genero == 0 && 
+                    empleados_.usua_edad == 0 && 
+                    empleados_.usua_edo_civil == 0 &&
+                    empleados_.usua_tipo_puesto == 0 &&
+                    empleados_.usua_tipo_contratacion==0 &&
+                    empleados_.usua_tipo_personal==0 &&
+                    empleados_.usua_tipo_jornada==0 &&
+                    empleados_.usua_tiempo_puesto==0 &&
+                    empleados_.usua_exp_laboral==0)
                 {
 
                     listaRpta = listaEmpleado;
@@ -429,6 +494,21 @@ namespace EncuestasV2.Controllers
                     if (empleados_.usua_empresa != 0)
                     {
                         listaEmpleado = listaEmpleado.Where(p => p.usua_empresa.Equals(empleados_.usua_empresa)).ToList();
+                     
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_departamento != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_departamento.Equals(empleados_.usua_departamento)).ToList();
+
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_centro_trabajo != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_centro_trabajo.Equals(empleados_.usua_centro_trabajo)).ToList();
+
                         Session["ListaUser"] = listaEmpleado;
                     }
 
@@ -485,6 +565,7 @@ namespace EncuestasV2.Controllers
                         listaEmpleado = listaEmpleado.Where(p => p.usua_exp_laboral.ToString().Contains(empleados_.usua_exp_laboral.ToString())).ToList();
                         Session["ListaUser"] = listaEmpleado;
                     }
+
                     Session["ListaUser"] = listaEmpleado;
                     listaRpta = listaEmpleado;
 
@@ -1144,12 +1225,30 @@ namespace EncuestasV2.Controllers
             int id_empresa = empleados_.usua_empresa;
 
             listarCombos();
-
+            if (empleados_.usua_empresa > 0)
+            {
+                llenarDepto2(empleados_.usua_empresa);
+            }
+            if (empleados_.usua_departamento > 0)
+            {
+                llenarCentro2(empleados_.usua_departamento);
+            }
+            ViewBag.listadepto2 = listaDepto2;
+            ViewBag.listacentro2 = listaCentro2;
             ViewBag.listaEmpresa = listaEmpresa;
             ViewBag.listaSexo = listaSexo;
             ViewBag.listaEdad = listaEdad;
             ViewBag.listaEdoCivil = listaEdoCivil;
-            
+            ViewBag.listaOpciones = listaOpciones;
+            ViewBag.listaProceso = listaProceso;
+            ViewBag.listaPuesto = listaPuesto;
+            ViewBag.listaContrata = listaContrata;
+            ViewBag.listaPersonal = listaPersonal;
+            ViewBag.listaJornada = listaJornada;
+            ViewBag.listaRotacion = listaRotacion;
+            ViewBag.listaTiempo = listaTiempo;
+            ViewBag.listaExpLab = listaExpLab;
+
 
             List<encuesta_usuariosCLS> listaEmpleado = null;
             List<encuesta_usuariosCLS> listaRpta = null;
@@ -1157,11 +1256,9 @@ namespace EncuestasV2.Controllers
 
             {
                 int id_estatus = db.Database.SqlQuery<int>("select periodo_id from encuaesta_periodo where periodo_estatus = 'A'").FirstOrDefault();
-                
+
 
                 listaEmpleado = (from empleado in db.encuesta_usuarios
-                                 where empleado.usua_presento == "S"
-                                 && empleado.usua_periodo == id_estatus
                                  join empresa in db.encuesta_empresa
                                  on empleado.usua_empresa equals empresa.emp_id
                                  join genero in db.encuesta_sexo
@@ -1170,32 +1267,100 @@ namespace EncuestasV2.Controllers
                                  on empleado.usua_edad equals edad_emp.edad_id
                                  join edo in db.encuesta_edocivil
                                  on empleado.usua_edo_civil equals edo.edocivil_id
-                                 //from empleados in db.encuesta_usuarios
-                                 join resultado in db.encuesta_resultados
-                                 on empleado.usua_id equals resultado.resu_usua_id
-
-
+                                 join op in db.encuaesta_opciones
+                                 on empleado.usua_sin_forma equals op.opcion_id
+                                 join primaria in db.encuesta_procesoedu
+                                 on empleado.usua_primaria equals primaria.procesoedu_id
+                                 join secundaria in db.encuesta_procesoedu
+                                 on empleado.usua_secundaria equals secundaria.procesoedu_id
+                                 join prepa in db.encuesta_procesoedu
+                                 on empleado.usua_preparatoria equals prepa.procesoedu_id
+                                 join tecnico in db.encuesta_procesoedu
+                                 on empleado.usua_tecnico equals tecnico.procesoedu_id
+                                 join lic in db.encuesta_procesoedu
+                                 on empleado.usua_licenciatura equals lic.procesoedu_id
+                                 join maestria in db.encuesta_procesoedu
+                                 on empleado.usua_maestria equals maestria.procesoedu_id
+                                 join doc in db.encuesta_procesoedu
+                                 on empleado.usua_doctorado equals doc.procesoedu_id
+                                 join tipopuesto in db.encuesta_tipopuesto
+                                 on empleado.usua_tipo_puesto equals tipopuesto.tipopuesto_id
+                                 join tipocont in db.encuesta_tipocontrata
+                                 on empleado.usua_tipo_contratacion equals tipocont.tipocont_id
+                                 join tipopersonal in db.encuesta_tipopersonal
+                                 on empleado.usua_tipo_personal equals tipopersonal.tipoperson_id
+                                 join tipojornada in db.encuesta_tipojornada
+                                 on empleado.usua_tipo_jornada equals tipojornada.tipojornada_id
+                                 join rota in db.encuaesta_rotacion
+                                 on empleado.usua_rotacion_turno equals rota.rotacionturno_id
+                                 join tiempo in db.encuesta_tiempopuesto
+                                 on empleado.usua_tiempo_puesto equals tiempo.tiempopue_id
+                                 join exp in db.encuesta_explab
+                                 on empleado.usua_exp_laboral equals exp.explab_id
+                                 join dep in db.encuaesta_departamento
+                                 on empleado.usua_departamento equals dep.dep_id
+                                 join cen in db.encuaesta_centro
+                                 on empleado.usua_centro_trabajo equals cen.centro_id
                                  select new encuesta_usuariosCLS
                                  {
                                      usua_id = empleado.usua_id,
                                      usua_nombre = empleado.usua_nombre,
+                                     usua_f_aplica = (DateTime)empleado.usua_f_aplica,
                                      usua_estatus = empleado.usua_estatus,
                                      usua_n_usuario = empleado.usua_n_usuario,
                                      usua_p_usuario = empleado.usua_p_usuario,
+                                     usua_f_alta = (DateTime)empleado.usua_f_alta,
+                                     usua_f_cancela = empleado.usua_f_cancela,
                                      usua_empresa = (int)empleado.usua_empresa,
                                      usua_genero = (int)empleado.usua_genero,
                                      usua_edad = (int)empleado.usua_edad,
                                      usua_edo_civil = (int)empleado.usua_edo_civil,
+                                     usua_tipo_puesto = (int)empleado.usua_tipo_puesto,
+                                     usua_tipo_contratacion = (int)empleado.usua_tipo_contratacion,
+                                     usua_tipo_personal = (int)empleado.usua_tipo_personal,
+                                     usua_tipo_jornada = (int)empleado.usua_tipo_jornada,
+                                     usua_tiempo_puesto = (int)empleado.usua_tiempo_puesto,
+                                     usua_exp_laboral = (int)empleado.usua_exp_laboral,
+                                     usua_presento = empleado.usua_presento,
+                                     usua_departamento = (int)empleado.usua_departamento,
+                                     usua_centro_trabajo = (int)empleado.usua_centro_trabajo,
                                      empleado_empresa = empresa.emp_descrip,
                                      empleado_genero = genero.sexo_desc,
                                      empleado_edad = edad_emp.edad_desc,
-                                     empleado_edocivil = edo.edocivil_desc
+                                     empleado_edocivil = edo.edocivil_desc,
+                                     empleado_sinformacion = op.opcion_desc,
+                                     empleado_primaria = primaria.procesoedu_desc,
+                                     empleado_secundaria = secundaria.procesoedu_desc,
+                                     empleado_preparatoria = prepa.procesoedu_desc,
+                                     empleado_tecnico = tecnico.procesoedu_desc,
+                                     empleado_licenciatura = lic.procesoedu_desc,
+                                     empleado_maestria = maestria.procesoedu_desc,
+                                     empleado_doctorado = doc.procesoedu_desc,
+                                     empleado_tipopuesto = tipopuesto.tipopuesto_desc,
+                                     empleado_tipocontata = tipocont.tipocont_desc,
+                                     empleado_tipopersonal = tipopersonal.tipoperson_desc,
+                                     empleado_tipojornada = tipojornada.tipojornada_desc,
+                                     empleado_rotacion = rota.rotacionturno_desc,
+                                     empleado_tiempopuesto = tiempo.tiempopue_desc,
+                                     empleado_explab = exp.explab_desc,
+                                     empleado_dep = dep.dep_desc,
+                                     empleado_cen = cen.centro_desc
 
                                  }).Distinct().ToList();
-
                 Session["ListaUser"] = listaEmpleado;
 
-                if (empleados_.usua_id == 0 && empleados_.usua_empresa == 0 && empleados_.usua_genero == 0 && empleados_.usua_edad == 0 && empleados_.usua_edo_civil == 0)
+                if (
+                    empleados_.usua_id == 0 &&
+                    empleados_.usua_empresa == 0 &&
+                    empleados_.usua_genero == 0 &&
+                    empleados_.usua_edad == 0 &&
+                    empleados_.usua_edo_civil == 0 &&
+                    empleados_.usua_tipo_puesto == 0 &&
+                    empleados_.usua_tipo_contratacion == 0 &&
+                    empleados_.usua_tipo_personal == 0 &&
+                    empleados_.usua_tipo_jornada == 0 &&
+                    empleados_.usua_tiempo_puesto == 0 &&
+                    empleados_.usua_exp_laboral == 0)
                 {
 
                     listaRpta = listaEmpleado;
@@ -1206,6 +1371,21 @@ namespace EncuestasV2.Controllers
                     if (empleados_.usua_empresa != 0)
                     {
                         listaEmpleado = listaEmpleado.Where(p => p.usua_empresa.Equals(empleados_.usua_empresa)).ToList();
+
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_departamento != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_departamento.Equals(empleados_.usua_departamento)).ToList();
+
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_centro_trabajo != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_centro_trabajo.Equals(empleados_.usua_centro_trabajo)).ToList();
+
                         Session["ListaUser"] = listaEmpleado;
                     }
 
@@ -1214,6 +1394,7 @@ namespace EncuestasV2.Controllers
                         listaEmpleado = listaEmpleado.Where(p => p.usua_genero.ToString().Contains(empleados_.usua_genero.ToString())).ToList();
                         Session["ListaUser"] = listaEmpleado;
                     }
+
                     if (empleados_.usua_edad != 0)
                     {
                         listaEmpleado = listaEmpleado.Where(p => p.usua_edad.ToString().Contains(empleados_.usua_edad.ToString())).ToList();
@@ -1225,8 +1406,46 @@ namespace EncuestasV2.Controllers
                         listaEmpleado = listaEmpleado.Where(p => p.usua_edo_civil.ToString().Contains(empleados_.usua_edo_civil.ToString())).ToList();
                         Session["ListaUser"] = listaEmpleado;
                     }
+
+                    if (empleados_.usua_tipo_puesto != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_tipo_puesto.ToString().Contains(empleados_.usua_tipo_puesto.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_tipo_contratacion != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_tipo_contratacion.ToString().Contains(empleados_.usua_tipo_contratacion.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_tipo_personal != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_tipo_personal.ToString().Contains(empleados_.usua_tipo_personal.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_tipo_jornada != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_tipo_jornada.ToString().Contains(empleados_.usua_tipo_jornada.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_tiempo_puesto != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_tiempo_puesto.ToString().Contains(empleados_.usua_tiempo_puesto.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
+                    if (empleados_.usua_exp_laboral != 0)
+                    {
+                        listaEmpleado = listaEmpleado.Where(p => p.usua_exp_laboral.ToString().Contains(empleados_.usua_exp_laboral.ToString())).ToList();
+                        Session["ListaUser"] = listaEmpleado;
+                    }
+
                     Session["ListaUser"] = listaEmpleado;
                     listaRpta = listaEmpleado;
+
                 }
 
             }
@@ -2868,6 +3087,7 @@ namespace EncuestasV2.Controllers
             ViewBag.ids = ids_usuarios;
             
             List<encuesta_usuariosCLS> listaEmpleado = null;
+            List<encuesta_usuariosCLS> listaEmpleado2 = null;
 
             using (var db = new csstdura_encuestaEntities())
             {
@@ -2958,8 +3178,21 @@ namespace EncuestasV2.Controllers
                                         resu_seccion = "IV.- Afectación"
                                     }).Distinct().ToList();
 
+                listaEmpleado2 = (from x in listaEmpleado
+                                  orderby x.usua_nombre,x.resu_seccion
+
+                                  select new encuesta_usuariosCLS
+                                  {
+                                      resu_usua_id = x.resu_usua_id,
+                                      resu_resultado = x.resu_resultado,
+                                      usua_nombre = x.usua_nombre,
+                                      resu_seccion_id = x.resu_seccion_id,
+                                      resu_seccion = x.resu_seccion
+                                  }).Distinct().ToList();
+
+                                  
             }
-            return View(listaEmpleado);
+            return View(listaEmpleado2);
 
         }
 
